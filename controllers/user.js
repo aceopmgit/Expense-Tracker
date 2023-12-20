@@ -1,6 +1,7 @@
 const path=require('path')
 const rootdir=require('../util/path.js');
-const e = require('express');
+
+const user=require('../models/user.js')
 
 exports.signup=(req,res,next)=>{    
     res.sendFile(path.join(rootdir,'views','user','signup.html'));
@@ -11,11 +12,11 @@ exports.addUser=async(req,res,next)=>{
         const name=req.body.Name;
         const email=req.body.Email
         const password=req.body.Password;
-        const data={
+        const data=await user.create({
             Name:name,
             Email:email,
             Password:password
-        }
+        })
         res.status(201).json({newUserDetail:data});
         
     
@@ -23,6 +24,7 @@ exports.addUser=async(req,res,next)=>{
     catch(err){
         res.status(500).json({
             Error:err
+                        
         })
     }
 }

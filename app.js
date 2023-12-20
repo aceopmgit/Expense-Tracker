@@ -13,6 +13,13 @@ app.use(bodyparser.json({extended:false}))
 
 app.use('/user',userRoutes);
 
-app.listen(3000);
+sequelize
+   .sync() //it syncs our models to the database by creating the appropriate tables and relations if we have them
+   .then((result)=>{
+    app.listen(3000);
+   })
+   .catch((err)=>{
+    console.log(err)
+   })
 
 

@@ -73,9 +73,9 @@ function submitUser(e){
         
     axios.post('http://localhost:3000/user/addUser',details)
         .then((res)=>{ 
-            name="";
-            email="";
-            password=""; 
+            document.getElementById('name').value='';
+            document.getElementById('email').value='';
+            document.getElementById('password').value='';
 
             
             
