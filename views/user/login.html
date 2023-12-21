@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign Up</title>
+    <title>Login</title>
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
@@ -23,22 +23,9 @@
       <br />
       <div class="card mx-auto" style="background-color: #edf2f3; width: 60%">
         <div class="card-body">
-          <h2 class="card-title">Sign Up</h2>
+          <h2 class="card-title">Login</h2>
 
-          <form id="signup">
-            <div class="form-floating">
-              <input
-                type="text"
-                id="name"
-                name="Name"
-                class="form-control"
-                placeholder="Name"
-                required
-              />
-              <label for="'name" class="form-label">Enter Name</label>
-              <br />
-            </div>
-
+          <form id="login">
             <div class="form-floating">
               <input
                 type="email"
@@ -65,15 +52,14 @@
               <br />
             </div>
 
-            <br />
             <button class="btn btn-block btn-primary" id="button" type="submit">
-              Sign Up
+              Login
             </button>
             <br />
             <br />
             <span>
-              Already a User ?
-              <a href="/user/login">LOGIN</a>
+              New User ?
+              <a href="/user/signup">SIGN UP</a>
             </span>
           </form>
         </div>
@@ -82,32 +68,31 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
     <script>
-      const signup = document.getElementById("signup");
-      signup.addEventListener("submit", submitUser);
+      const login = document.getElementById("login");
+      login.addEventListener("submit", submitUser);
 
       function submitUser(e) {
         e.preventDefault();
 
-        let name = document.getElementById("name").value;
         let email = document.getElementById("email").value;
         let password = document.getElementById("password").value;
 
         const details = {
-          Name: name,
           Email: email,
           Password: password,
         };
 
         axios
-          .post("http://localhost:3000/user/addUser", details)
+          .post("http://localhost:3000/user/loginCheck", details)
           .then((res) => {
-            document.getElementById("name").value = "";
+            alert(res.data.message);
+
             document.getElementById("email").value = "";
             document.getElementById("password").value = "";
           })
           .catch((err) => {
             document.body.innerHTML =
-              document.body.innerHTML + "<h4>Something went wrong</h4>";
+              document.body.innerHTML + `<h4>${err.message}</h4>`;
             console.log(err);
           });
       }

@@ -12,7 +12,8 @@ app.use(bodyparser.json({ extended: false }));
 app.use("/user", userRoutes);
 
 sequelize
-  .sync() //it syncs our models to the database by creating the appropriate tables and relations if we have them
+  .sync()
+  //.sync({ force: true }) //it syncs our models to the database by creating the appropriate tables and relations if we have them
   .then((result) => {
     app.listen(3000);
   })
