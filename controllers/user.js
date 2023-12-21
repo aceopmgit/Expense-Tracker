@@ -36,6 +36,12 @@ exports.loginCheck = async (req, res, next) => {
     const password = req.body.Password;
 
     const loginDetail = await user.findOne({ where: { Email: email } });
+    if (loginDetail === null) {
+      res.status(404).json({ message: "User not Found" });
+    }
+    if (loginDetail.Password != password) {
+      res.status(401).json({ message: "Incorrect Password" });
+    }
     if (loginDetail.Password === password) {
       res.status(200).json({ message: "User Logged in Successfully" });
     }

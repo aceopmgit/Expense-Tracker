@@ -87,8 +87,10 @@
           .then((res) => {
             alert(res.data.message);
 
-            document.getElementById("email").value = "";
-            document.getElementById("password").value = "";
+            if (res.status === 200) {
+              document.getElementById("email").value = "";
+              document.getElementById("password").value = "";
+            }
           })
           .catch((err) => {
             document.body.innerHTML =
