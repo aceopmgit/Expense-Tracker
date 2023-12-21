@@ -1,8 +1,8 @@
 const path = require("path");
-const rootdir = require("../util/path.js");
+const bcrypt = require("bcrypt");
 
+const rootdir = require("../util/path.js");
 const user = require("../models/user.js");
-const { where } = require("sequelize");
 
 exports.signup = (req, res, next) => {
   res.sendFile(path.join(rootdir, "views", "user", "signup.html"));
@@ -17,12 +17,20 @@ exports.addUser = async (req, res, next) => {
     const name = req.body.Name;
     const email = req.body.Email;
     const password = req.body.Password;
-    const data = await user.create({
-      Name: name,
-      Email: email,
-      Password: password,
+
+    bcrypt.hash(password, 10, async (err, hash) => {
+      console.log(err);
+
+      const data = await user.create({
+        Name: name,
+        Email: email,
+        Password: hash,
+      });
+
+      res
+        .status(201)
+        .json({ status: true, message: "User Signed Up Successfully" });
     });
-    res.status(201).json({ newUserDetail: data });
   } catch (err) {
     res.status(500).json({
       Error: err,
@@ -35,19 +43,26 @@ exports.loginCheck = async (req, res, next) => {
     const email = req.body.Email;
     const password = req.body.Password;
 
-    const loginDetail = await user.findOne({ where: { Email: email } });
-    if (loginDetail === null) {
-      res.status(404).json({ message: "User not Found" });
-    }
-    if (loginDetail.Password != password) {
-      res.status(401).json({ message: "Incorrect Password" });
-    }
-    if (loginDetail.Password === password) {
-      res.status(200).json({ message: "User Logged in Successfully" });
+    const loginDetail = await user.findAll({ where: { Email: email } });
+    if (loginDetail.length > 0) {
+      bcrypt.compare(password, loginDetail[0].Password, (err, result) => {
+        if (result === true) {
+          res
+            .status(200)
+            .json({ success: true, message: "User Logged in Successfully !" });
+        } else {
+          res
+            .status(400)
+            .json({ success: false, message: "Incorrect Password !" });
+        }
+      });
+    } else {
+      res.status(404).json({ success: false, message: "User not Found" });
     }
   } catch (err) {
     res.status(500).json({
-      Error: err,
+      success: false,
+      message: err,
     });
   }
 };

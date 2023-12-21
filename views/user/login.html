@@ -87,14 +87,13 @@
           .then((res) => {
             alert(res.data.message);
 
-            if (res.status === 200) {
-              document.getElementById("email").value = "";
-              document.getElementById("password").value = "";
-            }
+            document.getElementById("email").value = "";
+            document.getElementById("password").value = "";
           })
           .catch((err) => {
             document.body.innerHTML =
-              document.body.innerHTML + `<h4>${err.message}</h4>`;
+              document.body.innerHTML +
+              `<h4 style="color: red;">${err.message}</h4>`;
             console.log(err);
           });
       }

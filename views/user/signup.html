@@ -101,13 +101,15 @@
         axios
           .post("http://localhost:3000/user/addUser", details)
           .then((res) => {
+            alert(res.data.message);
             document.getElementById("name").value = "";
             document.getElementById("email").value = "";
             document.getElementById("password").value = "";
           })
           .catch((err) => {
             document.body.innerHTML =
-              document.body.innerHTML + "<h4>Something went wrong</h4>";
+              document.body.innerHTML +
+              `<h4 style="color: red;">${err.message}</h4>`;
             console.log(err);
           });
       }
