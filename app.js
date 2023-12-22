@@ -6,10 +6,14 @@ const sequelize = require("./util/database");
 const app = express();
 
 const userRoutes = require("./routes/user");
+const expenseRoutes = require("./routes/expense");
 
 app.use(bodyparser.json({ extended: false }));
 
+app.use(express.static("public"));
+
 app.use("/user", userRoutes);
+app.use("/expense", expenseRoutes);
 
 sequelize
   .sync()

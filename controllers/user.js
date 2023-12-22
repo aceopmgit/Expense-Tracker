@@ -5,11 +5,11 @@ const rootdir = require("../util/path.js");
 const user = require("../models/user.js");
 
 exports.signup = (req, res, next) => {
-  res.sendFile(path.join(rootdir, "views", "user", "signup.html"));
+  res.sendFile(path.join(rootdir, "views", "user", "signup", "signup.html"));
 };
 
 exports.login = (req, res, next) => {
-  res.sendFile(path.join(rootdir, "views", "user", "login.html"));
+  res.sendFile(path.join(rootdir, "views", "user", "login", "login.html"));
 };
 
 exports.addUser = async (req, res, next) => {

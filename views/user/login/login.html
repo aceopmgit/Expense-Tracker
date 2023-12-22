@@ -67,36 +67,6 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
-    <script>
-      const login = document.getElementById("login");
-      login.addEventListener("submit", submitUser);
-
-      function submitUser(e) {
-        e.preventDefault();
-
-        let email = document.getElementById("email").value;
-        let password = document.getElementById("password").value;
-
-        const details = {
-          Email: email,
-          Password: password,
-        };
-
-        axios
-          .post("http://localhost:3000/user/loginCheck", details)
-          .then((res) => {
-            alert(res.data.message);
-
-            document.getElementById("email").value = "";
-            document.getElementById("password").value = "";
-          })
-          .catch((err) => {
-            document.body.innerHTML =
-              document.body.innerHTML +
-              `<h4 style="color: red;">${err.message}</h4>`;
-            console.log(err);
-          });
-      }
-    </script>
+    <script src="/js/login.js"></script>
   </body>
 </html>
