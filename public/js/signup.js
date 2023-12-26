@@ -22,10 +22,11 @@ function submitUser(e) {
       );
 
       alert(res.data.message);
+      window.location.href = "/user/login";
 
-      document.getElementById("name").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("password").value = "";
+      //document.getElementById("name").value = "";
+      //document.getElementById("email").value = "";
+      //document.getElementById("password").value = "";
     } catch (err) {
       document.body.innerHTML =
         document.body.innerHTML + `<h4 style="color: red;">${err.message}</h4>`;

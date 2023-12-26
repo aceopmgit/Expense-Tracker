@@ -1,19 +1,27 @@
 const express = require("express");
 const bodyparser = require("body-parser");
+const path = require("path");
 
 const sequelize = require("./util/database");
+const user = require("./models/user");
+const expense = require("./models/expense");
 
 const app = express();
 
 const userRoutes = require("./routes/user");
 const expenseRoutes = require("./routes/expense");
+const indexRoutes = require("./routes/index");
 
 app.use(bodyparser.json({ extended: false }));
-
-app.use(express.static("public"));
+indexRoutes;
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/user", userRoutes);
 app.use("/expense", expenseRoutes);
+app.use(indexRoutes);
+
+user.hasMany(expense);
+expense.belongsTo(user, { contraints: true, onDelete: 'CASCADE' });
 
 sequelize
   .sync()

@@ -18,9 +18,9 @@ function submitUser(e) {
         "http://localhost:3000/user/loginCheck",
         details
       );
-      window.location.href = "http://localhost:3000/expense/enterExpense";
-      //window.redirect("/expense/enterExpense");
-      //alert(res.data.message);
+      alert(res.data.message);
+      localStorage.setItem("token", res.data.token);
+      window.location.href = "/expense/enterExpense";
 
       //document.getElementById("email").value = "";
       //document.getElementById("password").value = "";

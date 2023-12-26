@@ -1,16 +1,20 @@
 const path = require("path");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-const rootdir = require("../util/path.js");
 const user = require("../models/user.js");
 
 exports.signup = (req, res, next) => {
-  res.sendFile(path.join(rootdir, "views", "user", "signup", "signup.html"));
+  res.sendFile(path.join(__dirname, "..", "views", "signup.html"));
 };
 
 exports.login = (req, res, next) => {
-  res.sendFile(path.join(rootdir, "views", "user", "login", "login.html"));
+  res.sendFile(path.join(__dirname, "..", "views", "login.html"));
 };
+
+function generateAccessToken(id, name) {
+  return jwt.sign({ userId: id, name: name }, "5aaV0Zz3RHDg1lrnzjk5fQj0FYyeIt");
+}
 
 exports.addUser = async (req, res, next) => {
   try {
@@ -47,9 +51,11 @@ exports.loginCheck = async (req, res, next) => {
     if (loginDetail.length > 0) {
       bcrypt.compare(password, loginDetail[0].Password, (err, result) => {
         if (result === true) {
-          res
-            .status(200)
-            .json({ success: true, message: "User Logged in Successfully !" });
+          res.status(200).json({
+            success: true,
+            message: "User Logged in Successfully !",
+            token: generateAccessToken(loginDetail[0].id, loginDetail[0].Name),
+          });
         } else {
           res
             .status(400)

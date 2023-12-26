@@ -17,17 +17,18 @@ function addExpense(e) {
     category: category,
   };
 
-  async function userSignup() {
+  async function postExpense() {
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.post(
-        "http://localhost:3000/expense/addExpense",
-        details
-      );
+        "http://localhost:3000/expense/addExpense", details, { headers: { "Authorization": token } });
+      //axios only accepts the rsponse in the range of 200.if response is greater than 200 it will go to catch
 
       showExpense(res.data.expenseDetails);
 
-      //document.getElementById("amount").value = "";
-      //document.getElementById("description").value = "";
+      document.getElementById("amount").value = "";
+      document.getElementById("desc").value = "";
+      document.getElementById("category").value = "";
     } catch (err) {
       document.body.innerHTML =
         document.body.innerHTML + `<h4 style="color: red;">${err.message}</h4>`;
@@ -35,7 +36,7 @@ function addExpense(e) {
     }
   }
 
-  userSignup();
+  postExpense();
 }
 
 function showExpense(obj) {
@@ -47,7 +48,7 @@ function showExpense(obj) {
 
   //Creating Delete Button and adding class and Text Node to it
   const deletebtn = document.createElement("button");
-  deletebtn.className = "btn btn-sm float-right delete";
+  deletebtn.className = "btn btn-secondary float-right delete";
   deletebtn.appendChild(document.createTextNode("Delete Expense"));
 
   // Creating li Element
@@ -73,15 +74,17 @@ function showExpense(obj) {
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
-    const res = await axios.get("http://localhost:3000/expense/getExpense");
-    //console.log(res)
+    const token = localStorage.getItem("token");
+    const res = await axios.get("http://localhost:3000/expense/getExpense", { headers: { "Authorization": token } });
+
+
     for (let i = 0; i < res.data.allExpenseDetails.length; i++) {
       //console.log(res.data.allExpenseDetails[i])
       showExpense(res.data.allExpenseDetails[i]);
     }
+
   } catch (err) {
-    document.body.innerHTML =
-      document.body.innerHTML + "<h4>Could not show Details</h4>";
+    document.body.innerHTML = document.body.innerHTML + "<h4>Could not show Details</h4>";
 
     console.log(err);
   }
@@ -100,9 +103,9 @@ function updateExpense(e) {
       document.getElementById("expenseDetails").style.visibility = "hidden";
     }
     //console.log(eList.children.length);
-
+    const token = localStorage.getItem("token");
     axios
-      .delete(`http://localhost:3000/expense/deleteExpense/${key}`)
+      .delete(`http://localhost:3000/expense/deleteExpense/${key}`, { headers: { "Authorization": token } })
       .catch((err) => {
         console.log(err);
       });
