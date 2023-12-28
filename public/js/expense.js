@@ -8,6 +8,9 @@ eList.addEventListener("click", updateExpense);
 const premium = document.getElementById('premium');
 premium.addEventListener('click', premiumUser);
 
+const leaderBoard = document.getElementById('leaderBoard');
+leaderBoard.addEventListener('click', showLeaderBoard);
+
 function addExpense(e) {
   e.preventDefault();
 
@@ -15,17 +18,19 @@ function addExpense(e) {
   let description = document.getElementById("desc").value;
   let category = document.getElementById("category").value;
 
+
+
   const details = {
     amount: amount,
     description: description,
     category: category,
+
   };
 
   async function postExpense() {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.post(
-        "http://localhost:3000/expense/addExpense", details, { headers: { "Authorization": token } });
+      const res = await axios.post("http://localhost:3000/expense/addExpense", details, { headers: { "Authorization": token } });
       //axios only accepts the rsponse in the range of 200.if response is greater than 200 it will go to catch
 
       showExpense(res.data.expenseDetails);
@@ -43,12 +48,18 @@ function addExpense(e) {
   postExpense();
 }
 
-function showExpense(obj) {
+async function showExpense(obj) {
   //Creating Span Element for id
   const sId = document.createElement("span");
   sId.className = "id";
   sId.style.display = "none";
   sId.appendChild(document.createTextNode(obj.id));
+
+  //Creating span element to track amount
+  const sAmount = document.createElement('span');
+  sAmount.className = 'amount';
+  sAmount.style.display = 'none';
+  sAmount.appendChild(document.createTextNode(obj.Amount));
 
   //Creating Delete Button and adding class and Text Node to it
   const deletebtn = document.createElement("button");
@@ -65,6 +76,7 @@ function showExpense(obj) {
     " ",
     obj.Category,
     sId,
+    sAmount,
     deletebtn
   );
 
@@ -74,6 +86,23 @@ function showExpense(obj) {
   if (eList.children.length > 0) {
     document.getElementById("expenseDetails").style.visibility = "visible";
   }
+
+  //Updating Amount of user in front-end
+  const total = Number(document.getElementById('total').textContent) + Number(obj.Amount);
+  //console.log(obj.Amount)
+  document.getElementById('total').innerHTML = `${total}`;
+
+  //Updating Amount of user in backend 
+  const details = {
+    total: total
+  }
+
+  const token = localStorage.getItem("token");
+  axios.post("http://localhost:3000/user/updateTotal", details, { headers: { "Authorization": token } });
+  //axios only accepts the rsponse in the range of 200.if response is greater than 200 it will go to catch
+
+
+
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -82,9 +111,11 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     const check = await axios.get("http://localhost:3000/purchase/premiumCheck", { headers: { "Authorization": token } });
 
-    console.log(check.data.Premium)
+    //console.log(check.data.Premium)
     if (check.data.Premium === true) {
+      premium.remove();
       document.getElementById('premium-icon').style.visibility = 'visible';
+      document.getElementById('leaderBoard').style.visibility = 'visible';
     }
     else {
       premium.style.visibility = 'visible';
@@ -123,7 +154,9 @@ async function premiumUser(e) {
         status: 'SUCCESSFUL'
       }, { headers: { "Authorization": token } })
 
-      premium.style.visibility = 'hidden';
+      premium.remove();
+      document.getElementById('premium-icon').style.visibility = 'visible';
+      document.getElementById('leaderBoard').style.visibility = 'visible';
       alert('You are a premium user now !')
 
     }
@@ -145,25 +178,60 @@ async function premiumUser(e) {
 
 }
 
+async function showLeaderBoard() {
+  const token = localStorage.getItem("token");
+  const leaderList = document.getElementById('leaderList');
+  leaderList.innerHTML = "";
+
+  const leaders = await axios.get("http://localhost:3000/purchase/showLeaderBoard", { headers: { "Authorization": token } });
+
+  for (let i = 0; i < leaders.data.details.length; i++) {
+    //console.log(leaders.data.details[i]);
+    const li = document.createElement("li");
+    li.className = "list-group-item";
+    li.style.backgroundColor = '#eef76c'
+    li.append(leaders.data.details[i].Name, " ", leaders.data.details[i].Total);
+    leaderList.appendChild(li);
+  }
+
+
+}
+
 function updateExpense(e) {
   //Code for Delete Button
   if (e.target.classList.contains("delete")) {
+
+    const key = e.target.parentElement.getElementsByClassName("id")[0].textContent;
+    const amount = e.target.parentElement.getElementsByClassName('amount')[0].textContent;
+
     let li = e.target.parentElement;
     eList.removeChild(li);
 
-    const key =
-      e.target.parentElement.getElementsByClassName("id")[0].textContent;
+
 
     if (eList.children.length === 0) {
       document.getElementById("expenseDetails").style.visibility = "hidden";
     }
     //console.log(eList.children.length);
     const token = localStorage.getItem("token");
-    axios
-      .delete(`http://localhost:3000/expense/deleteExpense/${key}`, { headers: { "Authorization": token } })
-      .catch((err) => {
-        console.log(err);
-      });
+    axios.delete(`http://localhost:3000/expense/deleteExpense/${key}`, { headers: { "Authorization": token } })
+      .catch((err) => { console.log(err); });
+
+
+    const total = Number(document.getElementById('total').textContent) - Number(amount);
+    document.getElementById('total').innerHTML = total
+
+    //Updating Amount of user in backend 
+    const details = {
+      total: total
+    }
+
+    axios.post("http://localhost:3000/user/updateTotal", details, { headers: { "Authorization": token } });
+    //axios only accepts the rsponse in the range of 200.if response is greater than 200 it will go to catch
+
+
+
+
   }
 }
 

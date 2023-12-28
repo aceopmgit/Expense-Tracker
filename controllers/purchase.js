@@ -2,6 +2,7 @@ const Razorpay = require('razorpay');
 const Order = require('../models/orders');
 const User = require('../models/user');
 const e = require('express');
+const order = require('../models/orders');
 
 exports.purchasePremium = async (req, res, next) => {
     try {
@@ -35,8 +36,9 @@ exports.updateTransaction = async (req, res, next) => {
     const { order_id, payment_id, status } = req.body
     console.log(req.body)
     const order = await Order.findOne({ where: { orderId: order_id } })
-    const promise1 = order.update({ paymentId: payment_id, status: status });
+
     if (status === 'SUCCESSFUL') {
+        const promise1 = order.update({ paymentId: payment_id, status: status });
         const promise2 = req.user.update({ Premium: true });
         Promise.all([promise1, promise2]).then(() => {
             res.status(201).json({ success: true, message: 'Transaction Successfull' });
@@ -45,6 +47,7 @@ exports.updateTransaction = async (req, res, next) => {
         })
     }
     else {
+        const promise1 = order.update({ paymentId: payment_id, status: status });
         const promise2 = req.user.update({ Premium: false });
         Promise.all([promise1, promise2]).then(() => {
             res.status(201).json({ success: false, message: 'Transaction Failed' });
@@ -61,6 +64,17 @@ exports.premiumCheck = async (req, res, next) => {
     const details = await User.findOne({ where: { id: req.user.id } });
     console.log(details.Premium)
     res.status(201).json({ Premium: details.Premium });
+}
+
+exports.showLeaderBoard = async (req, res, next) => {
+    const details = await User.findAll({
+        order: [
+            ['Total', 'DESC']
+        ],
+        attributes: ['Name', 'Total']
+    })
+    res.status(201).json({ details: details });
+    //console.log('*****************************************************************' + details[0]);
 }
 
 

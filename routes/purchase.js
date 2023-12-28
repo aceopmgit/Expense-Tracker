@@ -11,5 +11,7 @@ router.post("/updateTransaction", userAuthenticate.authenticate, purchaseControl
 
 router.get("/premiumCheck", userAuthenticate.authenticate, purchaseController.premiumCheck);
 
+router.get("/showLeaderBoard", userAuthenticate.authenticate, purchaseController.showLeaderBoard);
+
 
 module.exports = router;

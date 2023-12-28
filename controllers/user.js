@@ -21,8 +21,8 @@ function isStringInvalid(string) {
   }
 }
 
-function generateAccessToken(id, name) {
-  return jwt.sign({ userId: id, name: name }, process.env.TOKEN_SECRET);
+function generateAccessToken(id, name, premium) {
+  return jwt.sign({ userId: id, name: name, premium: premium }, process.env.TOKEN_SECRET);
 }
 
 exports.addUser = async (req, res, next) => {
@@ -71,7 +71,7 @@ exports.loginCheck = async (req, res, next) => {
           res.status(200).json({
             success: true,
             message: "User Logged in Successfully !",
-            token: generateAccessToken(loginDetail[0].id, loginDetail[0].Name),
+            token: generateAccessToken(loginDetail[0].id, loginDetail[0].Name, loginDetail[0].Premium),
           });
         } else {
           res
@@ -89,3 +89,10 @@ exports.loginCheck = async (req, res, next) => {
     });
   }
 };
+
+exports.updateTotal = async (req, res, next) => {
+  const details = await user.findOne({ where: { id: req.user.id } });
+  details.update({ Total: req.body.total })
+
+  res.status(201).json({ succes: true, total: details.Total, updatedAt: details.updatedAt });
+}
