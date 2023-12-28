@@ -6,9 +6,22 @@ exports.expense = (req, res, next) => {
   res.sendFile(path.join(__dirname, "..", "views", "expense.html"));
 };
 
+function isStringInvalid(string) {
+  if (string === undefined || string.length === 0) {
+    return true
+  }
+  else {
+    return false
+  }
+}
+
 exports.addExpense = async (req, res, next) => {
   try {
     const { amount, description, category } = req.body;
+
+    if (isStringInvalid(amount) || isStringInvalid(description) || isStringInvalid(category)) {
+      return res.status(400).json({ status: false, message: 'Bad Parameter. Something is Misssing !' });
+    }
 
     const data = await expense.create({
       Amount: amount,

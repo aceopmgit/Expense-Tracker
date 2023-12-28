@@ -1,8 +1,12 @@
+
 const expense = document.getElementById("expense");
 expense.addEventListener("submit", addExpense);
 
 const eList = document.getElementById("expenseList");
 eList.addEventListener("click", updateExpense);
+
+const premium = document.getElementById('premium');
+premium.addEventListener('click', premiumUser);
 
 function addExpense(e) {
   e.preventDefault();
@@ -48,7 +52,7 @@ function showExpense(obj) {
 
   //Creating Delete Button and adding class and Text Node to it
   const deletebtn = document.createElement("button");
-  deletebtn.className = "btn btn-secondary float-right delete";
+  deletebtn.className = "btn btn-danger float-right delete";
   deletebtn.appendChild(document.createTextNode("Delete Expense"));
 
   // Creating li Element
@@ -75,6 +79,17 @@ function showExpense(obj) {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     const token = localStorage.getItem("token");
+
+    const check = await axios.get("http://localhost:3000/purchase/premiumCheck", { headers: { "Authorization": token } });
+
+    console.log(check.data.Premium)
+    if (check.data.Premium === true) {
+      document.getElementById('premium-icon').style.visibility = 'visible';
+    }
+    else {
+      premium.style.visibility = 'visible';
+    }
+
     const res = await axios.get("http://localhost:3000/expense/getExpense", { headers: { "Authorization": token } });
 
 
@@ -83,12 +98,52 @@ window.addEventListener("DOMContentLoaded", async () => {
       showExpense(res.data.allExpenseDetails[i]);
     }
 
+
+
   } catch (err) {
     document.body.innerHTML = document.body.innerHTML + "<h4>Could not show Details</h4>";
 
     console.log(err);
   }
 });
+
+async function premiumUser(e) {
+  const token = localStorage.getItem('token');
+  const res = await axios.get("http://localhost:3000/purchase/premiumMembership", { headers: { "Authorization": token } });
+  console.log(res);
+
+  const options = {
+    "key": res.data.key_id,
+    "order_id": res.data.order.id,
+    "handler": async function (response) {
+
+      await axios.post('http://localhost:3000/purchase/updateTransaction', {
+        order_id: options.order_id,
+        payment_id: response.razorpay_payment_id,
+        status: 'SUCCESSFUL'
+      }, { headers: { "Authorization": token } })
+
+      premium.style.visibility = 'hidden';
+      alert('You are a premium user now !')
+
+    }
+
+  };
+  const rzp1 = new Razorpay(options);
+  rzp1.open();
+  e.preventDefault();
+
+  rzp1.on('payment.failed', async function (response) {
+    console.log(response)
+    alert('Something went wrong !');
+    await axios.post('http://localhost:3000/purchase/updateTransaction', {
+      order_id: options.order_id,
+      payment_id: response.razorpay_payment_id,
+      status: 'FAILED'
+    }, { headers: { "Authorization": token } })
+  })
+
+}
 
 function updateExpense(e) {
   //Code for Delete Button
@@ -111,3 +166,5 @@ function updateExpense(e) {
       });
   }
 }
+
+

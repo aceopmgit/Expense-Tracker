@@ -20,10 +20,16 @@
   <body style="background-color: #eef76c">
     <nav
       class="navbar navbar-expand-lg navbar-primary"
-      style="background-color: #f7f319"
+      style="background-color: #9e400abe"
     >
       <div class="container-fluid">
-        <a class="navbar-brand" href="/"><h1>Expense Tracker</h1></a>
+        <h1>Expense Tracker <button type="button"  id='premium-icon'class="btn btn-dark" style="font-size:50%;color:gold;visibility:hidden ;"data-toggle="tooltip" data-placement="bottom" title="You are a Premium User">
+          &starf;
+        </button>
+        </h1>
+
+        <button id='premium' class="btn btn-dark float-right" style="color:gold;visibility:hidden;">Buy Premium</button>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       </div>
     </nav>
 

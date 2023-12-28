@@ -12,8 +12,17 @@ exports.login = (req, res, next) => {
   res.sendFile(path.join(__dirname, "..", "views", "login.html"));
 };
 
+function isStringInvalid(string) {
+  if (string === undefined || string.length === 0) {
+    return true
+  }
+  else {
+    return false
+  }
+}
+
 function generateAccessToken(id, name) {
-  return jwt.sign({ userId: id, name: name }, "5aaV0Zz3RHDg1lrnzjk5fQj0FYyeIt");
+  return jwt.sign({ userId: id, name: name }, process.env.TOKEN_SECRET);
 }
 
 exports.addUser = async (req, res, next) => {
@@ -21,6 +30,10 @@ exports.addUser = async (req, res, next) => {
     const name = req.body.Name;
     const email = req.body.Email;
     const password = req.body.Password;
+
+    if (isStringInvalid(name) || isStringInvalid(email) || isStringInvalid(password)) {
+      return res.status(400).json({ status: false, message: 'Bad Parameter. Something is Misssing !' });
+    }
 
     bcrypt.hash(password, 10, async (err, hash) => {
       console.log(err);
@@ -46,6 +59,10 @@ exports.loginCheck = async (req, res, next) => {
   try {
     const email = req.body.Email;
     const password = req.body.Password;
+
+    if (isStringInvalid(email) || isStringInvalid(password)) {
+      return res.status(400).json({ status: false, message: 'Bad Parameter. Something is Misssing !' });
+    }
 
     const loginDetail = await user.findAll({ where: { Email: email } });
     if (loginDetail.length > 0) {

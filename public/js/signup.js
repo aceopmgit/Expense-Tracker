@@ -29,7 +29,7 @@ function submitUser(e) {
       //document.getElementById("password").value = "";
     } catch (err) {
       document.body.innerHTML =
-        document.body.innerHTML + `<h4 style="color: red;">${err.message}</h4>`;
+        document.body.innerHTML + `<h4 style="color: red;">${err}</h4>`;
       console.log(err);
     }
   }
