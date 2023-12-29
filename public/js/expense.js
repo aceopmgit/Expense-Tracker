@@ -196,20 +196,14 @@ async function showLeaderBoard() {
 
   const leaders = await axios.get("http://localhost:3000/purchase/showLeaderBoard", { headers: { "Authorization": token } });
 
-  // leaders.data.details.sort((a, b) => {
-  //   return b.Total - a.Total
-  // })
-
   console.log(leaders.data.details);
   for (let i = 0; i < leaders.data.details.length; i++) {
     //console.log(leaders.data.details[i]);
-    if (leaders.data.details[i].Total != null) {
-      const li = document.createElement("li");
-      li.className = "list-group-item";
-      li.style.backgroundColor = '#eef76c'
-      li.append(leaders.data.details[i].name, " ", leaders.data.details[i].Total);
-      leaderList.appendChild(li);
-    }
+    const li = document.createElement("li");
+    li.className = "list-group-item";
+    li.style.backgroundColor = '#eef76c'
+    li.append(leaders.data.details[i].Name, " ", leaders.data.details[i].Total);
+    leaderList.appendChild(li);
   }
 
 

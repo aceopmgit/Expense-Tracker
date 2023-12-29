@@ -84,19 +84,13 @@ exports.updateTransaction = async (req, res, next) => {
 
 exports.showLeaderBoard = async (req, res, next) => {
     const details = await User.findAll({
-        attributes: ['id', 'name', [sequelize.fn('sum', sequelize.col('Amount')), 'Total']],
-        include: [{
-            model: Expense,
-            attributes: []
-        }],
-        group: ['user.id'],
         order: [
             ['Total', 'DESC']
-        ]
+        ],
+        attributes: ['Name', 'Total']
     })
-
-
     res.status(201).json({ details: details });
+
 
 }
 
