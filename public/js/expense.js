@@ -105,17 +105,25 @@ async function showExpense(obj) {
 
 }
 
+function parseJwt(token) {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     const token = localStorage.getItem("token");
-
-    const check = await axios.get("http://localhost:3000/purchase/premiumCheck", { headers: { "Authorization": token } });
-
-    //console.log(check.data.Premium)
-    if (check.data.Premium === true) {
+    const decodedToken = parseJwt(token);
+    const premiumCheck = decodedToken.premium;
+    if (premiumCheck) {
       premium.remove();
       document.getElementById('premium-icon').style.visibility = 'visible';
-      document.getElementById('leaderBoard').style.visibility = 'visible';
+      document.getElementById('leaderBoard').style.visibility = 'visible';//
     }
     else {
       premium.style.visibility = 'visible';
@@ -148,7 +156,7 @@ async function premiumUser(e) {
     "order_id": res.data.order.id,
     "handler": async function (response) {
 
-      await axios.post('http://localhost:3000/purchase/updateTransaction', {
+      const ut = await axios.post('http://localhost:3000/purchase/updateTransaction', {
         order_id: options.order_id,
         payment_id: response.razorpay_payment_id,
         status: 'SUCCESSFUL'
@@ -157,7 +165,10 @@ async function premiumUser(e) {
       premium.remove();
       document.getElementById('premium-icon').style.visibility = 'visible';
       document.getElementById('leaderBoard').style.visibility = 'visible';
-      alert('You are a premium user now !')
+      localStorage.setItem('token', ut.data.token)
+      showLeaderBoard();
+      alert('You are a premium user now !');
+
 
     }
 
@@ -185,13 +196,20 @@ async function showLeaderBoard() {
 
   const leaders = await axios.get("http://localhost:3000/purchase/showLeaderBoard", { headers: { "Authorization": token } });
 
+  // leaders.data.details.sort((a, b) => {
+  //   return b.Total - a.Total
+  // })
+
+  console.log(leaders.data.details);
   for (let i = 0; i < leaders.data.details.length; i++) {
     //console.log(leaders.data.details[i]);
-    const li = document.createElement("li");
-    li.className = "list-group-item";
-    li.style.backgroundColor = '#eef76c'
-    li.append(leaders.data.details[i].Name, " ", leaders.data.details[i].Total);
-    leaderList.appendChild(li);
+    if (leaders.data.details[i].Total != null) {
+      const li = document.createElement("li");
+      li.className = "list-group-item";
+      li.style.backgroundColor = '#eef76c'
+      li.append(leaders.data.details[i].name, " ", leaders.data.details[i].Total);
+      leaderList.appendChild(li);
+    }
   }
 
 

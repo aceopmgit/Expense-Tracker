@@ -1,3 +1,5 @@
 get http://localhost:3000/expense/getExpense
 
 //ctrl+shift+p to run
+
+//ctrl+k ctrl+s for keyboard shprtcut

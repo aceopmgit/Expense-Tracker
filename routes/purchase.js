@@ -9,7 +9,7 @@ router.get("/premiumMembership", userAuthenticate.authenticate, purchaseControll
 
 router.post("/updateTransaction", userAuthenticate.authenticate, purchaseController.updateTransaction);
 
-router.get("/premiumCheck", userAuthenticate.authenticate, purchaseController.premiumCheck);
+//router.get("/premiumCheck", userAuthenticate.authenticate, purchaseController.premiumCheck);
 
 router.get("/showLeaderBoard", userAuthenticate.authenticate, purchaseController.showLeaderBoard);
 
