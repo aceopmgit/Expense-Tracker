@@ -13,6 +13,6 @@ router.post("/addUser", userController.addUser);
 
 router.post("/loginCheck", userController.loginCheck);
 
-router.post("/updateTotal", userAuthenticate.authenticate, userController.updateTotal);
+//router.post("/updateTotal", userAuthenticate.authenticate, userController.updateTotal);
 
 module.exports = router;

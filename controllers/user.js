@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const user = require("../models/user.js");
+const sequelize = require('../util/database.js')
+
 
 exports.signup = (req, res, next) => {
   res.sendFile(path.join(__dirname, "..", "views", "signup.html"));
@@ -26,6 +28,7 @@ function generateAccessToken(id, name, premium) {
 }
 
 exports.addUser = async (req, res, next) => {
+  const t = await sequelize.transaction();
   try {
     const name = req.body.Name;
     const email = req.body.Email;
@@ -42,13 +45,13 @@ exports.addUser = async (req, res, next) => {
         Name: name,
         Email: email,
         Password: hash,
-      });
+      }, { transaction: t });
 
-      res
-        .status(201)
-        .json({ status: true, message: "User Signed Up Successfully" });
+      await t.commit();
+      res.status(201).json({ status: true, message: "User Signed Up Successfully" });
     });
   } catch (err) {
+    await t.rollback()
     res.status(500).json({
       Error: err,
     });
@@ -90,9 +93,9 @@ exports.loginCheck = async (req, res, next) => {
   }
 };
 
-exports.updateTotal = async (req, res, next) => {
-  const details = await user.findOne({ where: { id: req.user.id } });
-  details.update({ Total: req.body.total })
+// exports.updateTotal = async (req, res, next) => {
+//   const details = await user.findOne({ where: { id: req.user.id } });
+//   details.update({ Total: req.body.total })
 
-  res.status(201).json({ succes: true, total: details.Total, updatedAt: details.updatedAt });
-}
+//   res.status(201).json({ succes: true, total: details.Total, updatedAt: details.updatedAt });
+// }

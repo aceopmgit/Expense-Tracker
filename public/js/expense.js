@@ -92,16 +92,6 @@ async function showExpense(obj) {
   //console.log(obj.Amount)
   document.getElementById('total').innerHTML = `${total}`;
 
-  //Updating Amount of user in backend 
-  const details = {
-    total: total
-  }
-
-  const token = localStorage.getItem("token");
-  axios.post("http://localhost:3000/user/updateTotal", details, { headers: { "Authorization": token } });
-  //axios only accepts the rsponse in the range of 200.if response is greater than 200 it will go to catch
-
-
 
 }
 
@@ -232,15 +222,6 @@ function updateExpense(e) {
 
     const total = Number(document.getElementById('total').textContent) - Number(amount);
     document.getElementById('total').innerHTML = total
-
-    //Updating Amount of user in backend 
-    const details = {
-      total: total
-    }
-
-    axios.post("http://localhost:3000/user/updateTotal", details, { headers: { "Authorization": token } });
-    //axios only accepts the rsponse in the range of 200.if response is greater than 200 it will go to catch
-
 
 
 

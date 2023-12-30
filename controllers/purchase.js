@@ -5,6 +5,7 @@ const Expense = require('../models/expense');
 const e = require('express');
 const jwt = require("jsonwebtoken");
 const sequelize = require('sequelize');
+const s = require('../util/database.js')
 
 function generateAccessToken(id, name, premium) {
     return jwt.sign({ userId: id, name: name, premium: premium }, process.env.TOKEN_SECRET);
@@ -39,31 +40,35 @@ exports.purchasePremium = async (req, res, next) => {
 }
 
 exports.updateTransaction = async (req, res, next) => {
+    const t = await s.transaction();
     try {
         const { order_id, payment_id, status } = req.body
         console.log(req.body)
-        const order = await Order.findOne({ where: { orderId: order_id } })
+        const order = await Order.findOne({ where: { orderId: order_id } }, { transaction: t })
 
         if (status === 'SUCCESSFUL') {
-            const promise1 = order.update({ paymentId: payment_id, status: status });
-            const promise2 = req.user.update({ Premium: true });
-            Promise.all([promise1, promise2]).then(() => {
+            const promise1 = order.update({ paymentId: payment_id, status: status }, { transaction: t });
+            const promise2 = req.user.update({ Premium: true }, { transaction: t });
+            Promise.all([promise1, promise2]).then(async () => {
+                await t.commit();
                 res.status(201).json({ success: true, message: 'Transaction Successfull', token: generateAccessToken(req.user.id, undefined, true) });
             }).catch((err) => {
                 throw new Error(err);
             })
         }
         else {
-            const promise1 = order.update({ paymentId: payment_id, status: status });
-            const promise2 = req.user.update({ Premium: false });
-            Promise.all([promise1, promise2]).then(() => {
+            const promise1 = order.update({ paymentId: payment_id, status: status }, { transaction: t });
+            const promise2 = req.user.update({ Premium: false }, { transaction: t });
+            Promise.all([promise1, promise2]).then(async () => {
+                await t.commit();
                 res.status(201).json({ success: false, message: 'Transaction Failed' });
             }).catch((err) => {
                 throw new Error(err);
             })
         }
     } catch (err) {
-        console.log(err)
+        await t.rollback();
+        console.log(err);
         res.status(403).json({
             message: 'Something went wrong !',
             Error: err
