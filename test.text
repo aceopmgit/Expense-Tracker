@@ -1,4 +1,4 @@
-get http://localhost:3000/expense/getExpense
+post http://localhost:3000/password/forgotpassword
 
 //ctrl+shift+p to run
 

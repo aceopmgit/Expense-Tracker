@@ -14,14 +14,16 @@ const userRoutes = require("./routes/user");
 const expenseRoutes = require("./routes/expense");
 const purchaseRoutes = require("./routes/purchase")
 const indexRoutes = require("./routes/index");
+const passwordRoutes = require("./routes/password");
 
 app.use(bodyparser.json({ extended: false }));
-indexRoutes;
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/user", userRoutes);
 app.use("/expense", expenseRoutes);
-app.use("/purchase", purchaseRoutes)
+app.use("/purchase", purchaseRoutes);
+app.use("/password", passwordRoutes);
 app.use(indexRoutes);
 
 user.hasMany(expenses);
