@@ -1,8 +1,7 @@
 const login = document.getElementById("login");
 login.addEventListener("submit", submitUser);
 
-const resetPassword = document.getElementById("resetForm");
-resetPassword.addEventListener("submit", reset);
+
 
 function submitUser(e) {
   e.preventDefault();
@@ -37,23 +36,5 @@ function submitUser(e) {
   loginCheck();
 }
 
-async function reset() {
-  try {
-    let remail = document.getElementById("remail").value;
-
-    const details = {
-      email: remail
-    }
-    console.log(details)
-
-    const res = await axios.post("http://localhost:3000/password/forgotpassword", details);
-    alert('email');
-
-  } catch (err) {
-    document.body.innerHTML =
-      document.body.innerHTML + `<h4 style="color: red;">${err.message}</h4>`;
-    console.log(err);
-  }
-}
 
 

@@ -7,6 +7,7 @@ const sequelize = require("./util/database");
 const user = require("./models/user");
 const expenses = require("./models/expense");
 const orders = require('./models/orders');
+const fPassword = require('./models/forgotPassword')
 
 const app = express();
 
@@ -16,7 +17,8 @@ const purchaseRoutes = require("./routes/purchase")
 const indexRoutes = require("./routes/index");
 const passwordRoutes = require("./routes/password");
 
-app.use(bodyparser.json({ extended: false }));
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -31,6 +33,9 @@ expenses.belongsTo(user);
 
 user.hasMany(orders);
 orders.belongsTo(user);
+
+user.hasMany(fPassword);
+fPassword.belongsTo(user);
 
 sequelize
   .sync()

@@ -69,6 +69,7 @@ exports.deleteExpense = async (req, res, next) => {
 
     await expense.destroy({ where: { id: id, userId: req.user.id } }, { transaction: t });
 
+    await t.commit();
     res.sendStatus(200);
   } catch (err) {
     await t.rollback()

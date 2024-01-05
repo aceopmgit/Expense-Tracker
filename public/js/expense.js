@@ -11,41 +11,42 @@ premium.addEventListener('click', premiumUser);
 const leaderBoard = document.getElementById('leaderBoard');
 leaderBoard.addEventListener('click', showLeaderBoard);
 
-function addExpense(e) {
-  e.preventDefault();
+async function addExpense(e) {
+  try {
+    e.preventDefault();
 
-  let amount = document.getElementById("amount").value;
-  let description = document.getElementById("desc").value;
-  let category = document.getElementById("category").value;
+    let amount = document.getElementById("amount").value;
+    let description = document.getElementById("desc").value;
+    let category = document.getElementById("category").value;
 
 
 
-  const details = {
-    amount: amount,
-    description: description,
-    category: category,
+    const details = {
+      amount: amount,
+      description: description,
+      category: category,
 
-  };
+    };
 
-  async function postExpense() {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.post("http://localhost:3000/expense/addExpense", details, { headers: { "Authorization": token } });
-      //axios only accepts the rsponse in the range of 200.if response is greater than 200 it will go to catch
+    const token = localStorage.getItem("token");
+    const res = await axios.post("http://localhost:3000/expense/addExpense", details, { headers: { "Authorization": token } });
+    //axios only accepts the rsponse in the range of 200.if response is greater than 200 it will go to catch
 
-      showExpense(res.data.expenseDetails);
+    showExpense(res.data.expenseDetails);
 
-      document.getElementById("amount").value = "";
-      document.getElementById("desc").value = "";
-      document.getElementById("category").value = "";
-    } catch (err) {
-      document.body.innerHTML =
-        document.body.innerHTML + `<h4 style="color: red;">${err.message}</h4>`;
-      console.log(err);
-    }
+    // document.getElementById("amount").value = "";
+    // document.getElementById("desc").value = "";
+    // document.getElementById("category").value = "";
+
+
+  } catch (err) {
+    document.body.innerHTML =
+      document.body.innerHTML + `<h4 style="color: red;">${err.message}</h4>`;
+    console.log(err);
   }
 
-  postExpense();
+
+
 }
 
 async function showExpense(obj) {
@@ -130,7 +131,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
   } catch (err) {
-    document.body.innerHTML = document.body.innerHTML + "<h4>Could not show Details</h4>";
+    document.body.innerHTML = document.body.innerHTML + '<h4 style="color: red;">Could not show Details</h4>';
 
     console.log(err);
   }
@@ -199,32 +200,38 @@ async function showLeaderBoard() {
 
 }
 
-function updateExpense(e) {
-  //Code for Delete Button
-  if (e.target.classList.contains("delete")) {
+async function updateExpense(e) {
+  try {
+    //Code for Delete Button
+    if (e.target.classList.contains("delete")) {
 
-    const key = e.target.parentElement.getElementsByClassName("id")[0].textContent;
-    const amount = e.target.parentElement.getElementsByClassName('amount')[0].textContent;
+      const key = e.target.parentElement.getElementsByClassName("id")[0].textContent;
+      const amount = e.target.parentElement.getElementsByClassName('amount')[0].textContent;
 
-    let li = e.target.parentElement;
-    eList.removeChild(li);
+      let li = e.target.parentElement;
+      eList.removeChild(li);
 
 
 
-    if (eList.children.length === 0) {
-      document.getElementById("expenseDetails").style.visibility = "hidden";
+      if (eList.children.length === 0) {
+        document.getElementById("expenseDetails").style.visibility = "hidden";
+      }
+      //console.log(eList.children.length);
+      const token = localStorage.getItem("token");
+      axios.delete(`http://localhost:3000/expense/deleteExpense/${key}`, { headers: { "Authorization": token } })
+        .catch((err) => { console.log(err); });
+
+
+      const total = Number(document.getElementById('total').textContent) - Number(amount);
+      document.getElementById('total').innerHTML = total
+
+
+
     }
-    //console.log(eList.children.length);
-    const token = localStorage.getItem("token");
-    axios.delete(`http://localhost:3000/expense/deleteExpense/${key}`, { headers: { "Authorization": token } })
-      .catch((err) => { console.log(err); });
+  } catch (err) {
+    document.body.innerHTML = document.body.innerHTML + '<h4 style="color: red;">Could not delete expense !</h4>';
 
-
-    const total = Number(document.getElementById('total').textContent) - Number(amount);
-    document.getElementById('total').innerHTML = total
-
-
-
+    console.log(err);
   }
 }
 

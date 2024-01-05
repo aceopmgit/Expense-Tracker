@@ -49,44 +49,12 @@
               <button class="btn btn-block btn-primary" id="button" type="submit">Login</button>
             </form>
             <br>
-            <button class="btn btn-link" id="fPasswaord" data-bs-toggle="modal"
-              data-bs-target="#resetPasswordModal">Forget Password</button>
+            <a href="/password/forgotPassword">Forgot Password</a>
             <br>
             <br>
             <span>New User ? <a class="btn btn-outline-info" href="/user/signup">SIGN UP</a></span>
 
-            <div class="modal fade" id="resetPasswordModal">
 
-              <div class="modal-dialog">
-                <div class="modal-content">
-
-                  <div class="modal-header" style="background-color:#eef76c">
-                    <h1>Reset Password</h1>
-                    <button class="btn-close" data-bs-dismiss="modal" data-bs-target="#resetPasswordModal"></button>
-                  </div>
-
-                  <div class="modal-body" style="background-color: #eef891">
-                    <form id="resetForm">
-                      <p>Please enter your email address to reset your password</p>
-                      <div class="form-floating">
-                        <input type="email" id="remail" name="rEmail" class="form-control" placeholder="rEmail"
-                          required />
-                        <label for="remail" class="form-label">Enter Email</label>
-                        <br />
-                      </div>
-
-
-                      <button class="btn btn-primary float-right" id="submit" type="submit">Submit</button>
-                    </form>
-
-
-
-                  </div>
-
-
-                </div>
-              </div>
-            </div>
 
           </div>
         </div>

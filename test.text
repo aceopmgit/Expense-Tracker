@@ -1,4 +1,9 @@
 post http://localhost:3000/password/forgotpassword
+content-type: application/json
+
+{
+    "email":"abc@gmail.com"
+}
 
 //ctrl+shift+p to run
 
