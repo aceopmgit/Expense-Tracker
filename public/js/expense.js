@@ -1,3 +1,4 @@
+const token = localStorage.getItem("token");
 
 const expense = document.getElementById("expense");
 expense.addEventListener("submit", addExpense);
@@ -28,7 +29,7 @@ async function addExpense(e) {
 
     };
 
-    const token = localStorage.getItem("token");
+
     const res = await axios.post("http://localhost:3000/expense/addExpense", details, { headers: { "Authorization": token } });
     //axios only accepts the rsponse in the range of 200.if response is greater than 200 it will go to catch
 
@@ -108,7 +109,7 @@ function parseJwt(token) {
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
-    const token = localStorage.getItem("token");
+
     const decodedToken = parseJwt(token);
     const premiumCheck = decodedToken.premium;
     if (premiumCheck) {
@@ -138,7 +139,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function premiumUser(e) {
-  const token = localStorage.getItem('token');
+
   const res = await axios.get("http://localhost:3000/purchase/premiumMembership", { headers: { "Authorization": token } });
   console.log(res);
 
@@ -181,20 +182,44 @@ async function premiumUser(e) {
 }
 
 async function showLeaderBoard() {
-  const token = localStorage.getItem("token");
-  const leaderList = document.getElementById('leaderList');
-  leaderList.innerHTML = "";
+  try {
+    const leaderList = document.getElementById('leaderList');
+    leaderList.innerHTML = "";
 
-  const leaders = await axios.get("http://localhost:3000/purchase/showLeaderBoard", { headers: { "Authorization": token } });
+    const leaders = await axios.get("http://localhost:3000/purchase/showLeaderBoard", { headers: { "Authorization": token } });
 
-  console.log(leaders.data.details);
-  for (let i = 0; i < leaders.data.details.length; i++) {
-    //console.log(leaders.data.details[i]);
-    const li = document.createElement("li");
-    li.className = "list-group-item";
-    li.style.backgroundColor = '#eef76c'
-    li.append(leaders.data.details[i].Name, " ", leaders.data.details[i].Total);
-    leaderList.appendChild(li);
+    console.log(leaders.data.details);
+    for (let i = 0; i < leaders.data.details.length; i++) {
+      //console.log(leaders.data.details[i]);
+      const li = document.createElement("li");
+      li.className = "list-group-item";
+      li.style.backgroundColor = '#eef76c'
+      li.append(leaders.data.details[i].Name, " ", leaders.data.details[i].Total);
+      leaderList.appendChild(li);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function download() {
+  try {
+    let response = await axios.get('http://localhost:3000/user/download', { headers: { "Authorization": token } })
+
+    if (response.status === 201) {
+      //the bcakend is essentially sending a download link
+      //  which if we open in browser, the file would download
+      var a = document.createElement("a");
+      a.href = response.data.fileUrl;
+      a.download = 'myexpense.csv';
+      a.click();
+    } else {
+      throw new Error(response.data.message)
+    }
+
+
+  } catch (err) {
+    console.log(err);
   }
 
 
@@ -217,7 +242,7 @@ async function updateExpense(e) {
         document.getElementById("expenseDetails").style.visibility = "hidden";
       }
       //console.log(eList.children.length);
-      const token = localStorage.getItem("token");
+
       axios.delete(`http://localhost:3000/expense/deleteExpense/${key}`, { headers: { "Authorization": token } })
         .catch((err) => { console.log(err); });
 

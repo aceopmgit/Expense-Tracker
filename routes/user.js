@@ -9,6 +9,8 @@ router.get("/signup", userController.signup);
 
 router.get("/login", userController.login);
 
+router.get('/download', userAuthenticate.authenticate, userController.download)
+
 router.post("/addUser", userController.addUser);
 
 router.post("/loginCheck", userController.loginCheck);
