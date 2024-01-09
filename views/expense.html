@@ -55,6 +55,19 @@
 
             </button>
           </li>
+
+          <li class="nav-item">
+            <button id='report' data-bs-toggle="modal" data-bs-target="#reportModal"
+              style="color: black;visibility:hidden;" class="nav-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                class="bi bi-file-earmark-bar-graph-fill" viewBox="0 0 16 16">
+                <path
+                  d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1m.5 10v-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5m-2.5.5a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5zm-3 0a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5z" />
+              </svg>
+              Report</button>
+
+          </li>
+
           <li class="nav-item">
             <button id='premium' class="nav-link" style="color: black;visibility:hidden;">
               <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
@@ -64,17 +77,6 @@
               </svg>
               Buy Premium
             </button>
-          </li>
-          <li class="nav-item">
-            <button id='report' data-bs-toggle="modal" data-bs-target="#reportModal"
-              style="color: black;visibility:visible;" class="nav-link">
-              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
-                class="bi bi-file-earmark-bar-graph-fill" viewBox="0 0 16 16">
-                <path
-                  d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1m.5 10v-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5m-2.5.5a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5zm-3 0a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5z" />
-              </svg>
-              Report</button>
-
           </li>
 
           <li class="nav-item dropdown">
@@ -100,7 +102,7 @@
 
   <div class="modal fade" id="reportModal">
 
-    <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
 
         <div class="modal-header" style="background-color: black;color: gold;">
@@ -108,58 +110,59 @@
         </div>
 
         <div class="modal-body" style="background-color: #eef76c">
-          <!-- <ol class="list-group list-group-numbered " id="leaderList"></ol> -->
-          <br>
-          <div>
-            <table class="table">
-              <h4>Today's Expense</h4>
-              <thead>
-                <tr class="table-primary">
-                  <th scope=" col">Date</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Expense</th>
-                </tr>
-              </thead>
-              <tbody class="table-secondary" id="today">
+
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="Expenses-tab" data-bs-toggle="tab" data-bs-target="#expense-tab-pane"
+                type="button" role="tab" aria-controls="expense-tab-pane" aria-selected="true">Expenses</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history-tab-pane"
+                type="button" role="tab" aria-controls="history-tab-pane" aria-selected="false">Download
+                History</button>
+            </li>
 
 
-              </tbody>
-            </table>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="expense-tab-pane" role="tabpanel" aria-labelledby="Expenses-tab"
+              tabindex="0">
 
-            <br>
-            <table class="table">
-              <h4>Monthly Expense</h4>
-              <thead>
-                <tr class="table-primary">
-                  <th scope=" col">Date</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Expense</th>
-                </tr>
-              </thead>
-              <tbody class="table-secondary" id="month">
+              <table class="table">
+                <thead>
+                  <tr class="table-primary">
+                    <th scope=" col">Date</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody class="table-secondary" id="expenseBody">
 
-              </tbody>
-            </table>
 
-            <br>
-            <table class="table">
-              <h4>Yearly Expense</h4>
-              <thead>
-                <tr class="table-primary">
-                  <th scope=" col">Date</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Expense</th>
-                </tr>
-              </thead>
-              <tbody class="table-secondary" id="year">
+                </tbody>
+              </table>
 
-              </tbody>
-            </table>
+
+            </div>
+
+            <div class="tab-pane fade" id="history-tab-pane" role="tabpanel" aria-labelledby="history-tab" tabindex="0">
+
+              <table class="table">
+                <thead>
+                  <tr class="table-primary">
+                    <th scope=" col">Date</th>
+                    <th scope="col">File Downloaded</th>
+
+                  </tr>
+                </thead>
+                <tbody class="table-secondary" id="dhistory">
+
+
+                </tbody>
+              </table>
+            </div>
           </div>
-
         </div>
 
         <div class="modal-footer" style="background-color: #eef76c">
@@ -172,7 +175,7 @@
 
   <div class="modal fade" id="leaderBoardModal">
 
-    <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
 
         <div class="modal-header" style="background-color: black;color: gold;">

@@ -7,7 +7,8 @@ const sequelize = require("./util/database");
 const user = require("./models/user");
 const expenses = require("./models/expense");
 const orders = require('./models/orders');
-const fPassword = require('./models/forgotPassword')
+const fPassword = require('./models/forgotPassword');
+const downloads = require('./models/downloads');
 
 const app = express();
 
@@ -36,6 +37,9 @@ orders.belongsTo(user);
 
 user.hasMany(fPassword);
 fPassword.belongsTo(user);
+
+user.hasMany(downloads);
+downloads.belongsTo(user);
 
 sequelize
   .sync()

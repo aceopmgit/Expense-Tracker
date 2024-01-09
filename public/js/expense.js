@@ -12,6 +12,9 @@ premium.addEventListener('click', premiumUser);
 const leaderBoard = document.getElementById('leaderBoard');
 leaderBoard.addEventListener('click', showLeaderBoard);
 
+const report = document.getElementById('report');
+report.addEventListener('click', showReport);
+
 async function addExpense(e) {
   try {
     e.preventDefault();
@@ -115,7 +118,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (premiumCheck) {
       premium.remove();
       document.getElementById('premium-icon').style.visibility = 'visible';
-      document.getElementById('leaderBoard').style.visibility = 'visible';//
+      document.getElementById('leaderBoard').style.visibility = 'visible';
+      document.getElementById('report').style.visibility = 'visible';
     }
     else {
       premium.style.visibility = 'visible';
@@ -157,6 +161,7 @@ async function premiumUser(e) {
       premium.remove();
       document.getElementById('premium-icon').style.visibility = 'visible';
       document.getElementById('leaderBoard').style.visibility = 'visible';
+      document.getElementById('report').style.visibility = 'visible';
       localStorage.setItem('token', ut.data.token)
       showLeaderBoard();
       alert('You are a premium user now !');
@@ -188,7 +193,7 @@ async function showLeaderBoard() {
 
     const leaders = await axios.get("http://localhost:3000/purchase/showLeaderBoard", { headers: { "Authorization": token } });
 
-    console.log(leaders.data.details);
+    // console.log(leaders.data.details);
     for (let i = 0; i < leaders.data.details.length; i++) {
       //console.log(leaders.data.details[i]);
       const li = document.createElement("li");
@@ -202,17 +207,88 @@ async function showLeaderBoard() {
   }
 }
 
+async function showReport() {
+  try {
+    const expenseBody = document.getElementById('expenseBody');
+    expenseBody.innerHTML = "";
+
+
+    //For showing user Expenses
+    const res = await axios.get("http://localhost:3000/expense/getExpense", { headers: { "Authorization": token } });
+
+
+    for (let i = 0; i < res.data.allExpenseDetails.length; i++) {
+      const tr = document.createElement('tr');
+
+      const date = document.createElement('td');
+      date.appendChild(document.createTextNode(res.data.allExpenseDetails[i].createdAt));
+
+      const category = document.createElement('td');
+      category.appendChild(document.createTextNode(res.data.allExpenseDetails[i].Category));
+
+      const description = document.createElement('td');
+      description.appendChild(document.createTextNode(res.data.allExpenseDetails[i].Description));
+
+      const amount = document.createElement('td');
+      amount.appendChild(document.createTextNode(res.data.allExpenseDetails[i].Amount));
+
+      tr.append(date, category, description, amount);
+      expenseBody.appendChild(tr);
+
+      //console.log(res.data.allExpenseDetails[i]);
+    }
+
+    downloadHistory();
+
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function downloadHistory() {
+  try {
+
+    const dList = document.getElementById('dhistory');
+    dList.innerHTML = "";
+
+    //For showing download history of user
+    const result = await axios.get("http://localhost:3000/expense/downloadList", { headers: { "Authorization": token } });
+    console.log(result)
+    for (let i = 0; i < result.data.downloadList.length; i++) {
+      const tr = document.createElement('tr');
+
+      const date = document.createElement('td');
+      date.appendChild(document.createTextNode(result.data.downloadList[i].createdAt));
+
+      const link = document.createElement('a');
+      link.appendChild(document.createTextNode(result.data.downloadList[i].Name));
+      link.href = `${result.data.downloadList[i].Url}`;
+
+      const file = document.createElement('td');
+      file.appendChild(link);
+
+      tr.append(date, file);
+      dList.appendChild(tr);
+      //console.log(result.data.downloadList.length);
+    }
+  }
+  catch (err) {
+    console.log(err);
+  }
+}
+
 async function download() {
   try {
-    let response = await axios.get('http://localhost:3000/user/download', { headers: { "Authorization": token } })
+    let response = await axios.get('http://localhost:3000/expense/download', { headers: { "Authorization": token } })
 
-    if (response.status === 201) {
+    if (response.status === 200) {
       //the bcakend is essentially sending a download link
       //  which if we open in browser, the file would download
-      var a = document.createElement("a");
+      let a = document.createElement("a");
       a.href = response.data.fileUrl;
       a.download = 'myexpense.csv';
       a.click();
+      downloadHistory();
     } else {
       throw new Error(response.data.message)
     }
