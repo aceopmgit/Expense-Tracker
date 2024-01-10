@@ -2,6 +2,7 @@ const express = require("express");
 
 const userController = require("../controllers/user");
 
+const userAuthenticate = require('../controllers/Authenticate')
 
 const router = express.Router();
 
@@ -13,6 +14,6 @@ router.post("/addUser", userController.addUser);
 
 router.post("/loginCheck", userController.loginCheck);
 
-//router.post("/updateTotal", userAuthenticate.authenticate, userController.updateTotal);
+router.get("/getTotal", userAuthenticate.authenticate, userController.getTotal);
 
 module.exports = router;

@@ -93,9 +93,9 @@ exports.loginCheck = async (req, res, next) => {
   }
 };
 
-// exports.updateTotal = async (req, res, next) => {
-//   const details = await user.findOne({ where: { id: req.user.id } });
-//   details.update({ Total: req.body.total })
+exports.getTotal = async (req, res, next) => {
+  const details = await user.findOne({ where: { id: req.user.id }, attributes: ['Total'] });
 
-//   res.status(201).json({ succes: true, total: details.Total, updatedAt: details.updatedAt });
-// }
+
+  res.status(201).json({ succes: true, total: details.Total, });
+}

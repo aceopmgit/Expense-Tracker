@@ -9,11 +9,8 @@ eList.addEventListener("click", updateExpense);
 const premium = document.getElementById('premium');
 premium.addEventListener('click', premiumUser);
 
-const leaderBoard = document.getElementById('leaderBoard');
-leaderBoard.addEventListener('click', showLeaderBoard);
-
-const report = document.getElementById('report');
-report.addEventListener('click', showReport);
+const backendApi = 'http://localhost:3000';
+const rpagination = document.getElementById('rpagination');
 
 async function addExpense(e) {
   try {
@@ -33,10 +30,15 @@ async function addExpense(e) {
     };
 
 
-    const res = await axios.post("http://localhost:3000/expense/addExpense", details, { headers: { "Authorization": token } });
+    const res = await axios.post(`${backendApi}/expense/addExpense`, details, { headers: { "Authorization": token } });
     //axios only accepts the rsponse in the range of 200.if response is greater than 200 it will go to catch
 
     showExpense(res.data.expenseDetails);
+
+    //Updating Amount of user in front-end
+    const result = await axios.get(`${backendApi}/user/getTotal`, { headers: { "Authorization": token } })
+    document.getElementById('total').innerHTML = `${result.data.total}`;
+    document.getElementById('rtotal').innerHTML = `${result.data.total}`;
 
     // document.getElementById("amount").value = "";
     // document.getElementById("desc").value = "";
@@ -54,6 +56,7 @@ async function addExpense(e) {
 }
 
 async function showExpense(obj) {
+
   //Creating Span Element for id
   const sId = document.createElement("span");
   sId.className = "id";
@@ -91,13 +94,6 @@ async function showExpense(obj) {
   if (eList.children.length > 0) {
     document.getElementById("expenseDetails").style.visibility = "visible";
   }
-
-  //Updating Amount of user in front-end
-  const total = Number(document.getElementById('total').textContent) + Number(obj.Amount);
-  //console.log(obj.Amount)
-  document.getElementById('total').innerHTML = `${total}`;
-
-
 }
 
 function parseJwt(token) {
@@ -113,6 +109,21 @@ function parseJwt(token) {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
 
+    const res = await axios.get(`${backendApi}/expense/getExpense`, { headers: { "Authorization": token } });
+
+
+    for (let i = 0; i < res.data.expenses.length; i++) {
+      //console.log(res.data.allExpenseDetails[i])
+      showExpense(res.data.expenses[i]);
+    }
+    console.log(res);
+
+
+    //Updating Amount of user in front-end
+    const result = await axios.get(`${backendApi}/user/getTotal`, { headers: { "Authorization": token } })
+    document.getElementById('total').innerHTML = `${result.data.total}`;
+    document.getElementById('rtotal').innerHTML = `${result.data.total}`;
+
     const decodedToken = parseJwt(token);
     const premiumCheck = decodedToken.premium;
     if (premiumCheck) {
@@ -120,18 +131,18 @@ window.addEventListener("DOMContentLoaded", async () => {
       document.getElementById('premium-icon').style.visibility = 'visible';
       document.getElementById('leaderBoard').style.visibility = 'visible';
       document.getElementById('report').style.visibility = 'visible';
+      showLeaderBoard();
+      showReport(1)
+
     }
     else {
       premium.style.visibility = 'visible';
     }
 
-    const res = await axios.get("http://localhost:3000/expense/getExpense", { headers: { "Authorization": token } });
-
-
-    for (let i = 0; i < res.data.allExpenseDetails.length; i++) {
-      //console.log(res.data.allExpenseDetails[i])
-      showExpense(res.data.allExpenseDetails[i]);
-    }
+    // 
+    // const result = await axios.get(`${backendApi}/expense/reports?page=${page}`, { headers: { "Authorization": token } })
+    // showReport(result.data.expenses);
+    // showPagination(result.data);
 
 
 
@@ -142,9 +153,62 @@ window.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+function showPagination({
+  currentPage,
+  hasNextPage,
+  nextPage,
+  hasPreviousPage,
+  previousPage,
+
+}) {
+  rpagination.innerHTML = "";
+  console.log(rpagination)
+
+  if (hasPreviousPage) {
+    const pbtn = document.createElement('button');
+    pbtn.className = 'page-item';
+    pbtn.innerHTML = previousPage
+    pbtn.addEventListener('click', () => { showReport(previousPage) });
+    rpagination.appendChild(pbtn);
+  }
+  const cbtn = document.createElement('button');
+  cbtn.className = 'page-item';
+  cbtn.innerHTML = currentPage;
+  cbtn.addEventListener('click', () => { showReport(currentPage) });
+  rpagination.appendChild(cbtn);
+
+  if (hasNextPage) {
+    const nbtn = document.createElement('button');
+    nbtn.className = 'page-item';
+    nbtn.innerHTML = nextPage;
+    nbtn.addEventListener('click', () => { showReport(nextPage) });
+    rpagination.appendChild(nbtn);
+
+  }
+}
+
+// async function getExpenses(page) {
+//   try {
+//     const res = await axios.get(`${backendApi}/expense/getExpense?page=${page}`, { headers: { "Authorization": token } });
+
+//     eList.innerHTML = "";
+//     for (let i = 0; i < res.data.expenses.length; i++) {
+//       //console.log(res.data.allExpenseDetails[i])
+//       showExpense(res.data.expenses[i]);
+//     }
+//     console.log(res);
+
+
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+
+
+
 async function premiumUser(e) {
 
-  const res = await axios.get("http://localhost:3000/purchase/premiumMembership", { headers: { "Authorization": token } });
+  const res = await axios.get(`${backendApi}/purchase/premiumMembership`, { headers: { "Authorization": token } });
   console.log(res);
 
   const options = {
@@ -152,7 +216,7 @@ async function premiumUser(e) {
     "order_id": res.data.order.id,
     "handler": async function (response) {
 
-      const ut = await axios.post('http://localhost:3000/purchase/updateTransaction', {
+      const ut = await axios.post(`${backendApi}/purchase/updateTransaction`, {
         order_id: options.order_id,
         payment_id: response.razorpay_payment_id,
         status: 'SUCCESSFUL'
@@ -177,7 +241,7 @@ async function premiumUser(e) {
   rzp1.on('payment.failed', async function (response) {
     console.log(response)
     alert('Something went wrong !');
-    await axios.post('http://localhost:3000/purchase/updateTransaction', {
+    await axios.post(`${backendApi}/purchase/updateTransaction`, {
       order_id: options.order_id,
       payment_id: response.razorpay_payment_id,
       status: 'FAILED'
@@ -191,7 +255,7 @@ async function showLeaderBoard() {
     const leaderList = document.getElementById('leaderList');
     leaderList.innerHTML = "";
 
-    const leaders = await axios.get("http://localhost:3000/purchase/showLeaderBoard", { headers: { "Authorization": token } });
+    const leaders = await axios.get(`${backendApi}/purchase/showLeaderBoard`, { headers: { "Authorization": token } });
 
     // console.log(leaders.data.details);
     for (let i = 0; i < leaders.data.details.length; i++) {
@@ -207,37 +271,36 @@ async function showLeaderBoard() {
   }
 }
 
-async function showReport() {
+async function showReport(page) {
   try {
     const expenseBody = document.getElementById('expenseBody');
     expenseBody.innerHTML = "";
 
-
     //For showing user Expenses
-    const res = await axios.get("http://localhost:3000/expense/getExpense", { headers: { "Authorization": token } });
+    const res = await axios.get(`${backendApi}/expense/getExpense?page=${page}&limit=${10}`, { headers: { "Authorization": token } });
 
 
-    for (let i = 0; i < res.data.allExpenseDetails.length; i++) {
+    for (let i = 0; i < res.data.expenses.length; i++) {
       const tr = document.createElement('tr');
 
       const date = document.createElement('td');
-      date.appendChild(document.createTextNode(res.data.allExpenseDetails[i].createdAt));
+      date.appendChild(document.createTextNode(res.data.expenses[i].createdAt));
 
       const category = document.createElement('td');
-      category.appendChild(document.createTextNode(res.data.allExpenseDetails[i].Category));
+      category.appendChild(document.createTextNode(res.data.expenses[i].Category));
 
       const description = document.createElement('td');
-      description.appendChild(document.createTextNode(res.data.allExpenseDetails[i].Description));
+      description.appendChild(document.createTextNode(res.data.expenses[i].Description));
 
       const amount = document.createElement('td');
-      amount.appendChild(document.createTextNode(res.data.allExpenseDetails[i].Amount));
+      amount.appendChild(document.createTextNode(res.data.expenses[i].Amount));
 
       tr.append(date, category, description, amount);
       expenseBody.appendChild(tr);
 
       //console.log(res.data.allExpenseDetails[i]);
     }
-
+    showPagination(res.data)
     downloadHistory();
 
   } catch (err) {
@@ -252,8 +315,8 @@ async function downloadHistory() {
     dList.innerHTML = "";
 
     //For showing download history of user
-    const result = await axios.get("http://localhost:3000/expense/downloadList", { headers: { "Authorization": token } });
-    console.log(result)
+    const result = await axios.get(`${backendApi}/expense/downloadHistory`, { headers: { "Authorization": token } });
+    //console.log(result)
     for (let i = 0; i < result.data.downloadList.length; i++) {
       const tr = document.createElement('tr');
 
@@ -279,7 +342,7 @@ async function downloadHistory() {
 
 async function download() {
   try {
-    let response = await axios.get('http://localhost:3000/expense/download', { headers: { "Authorization": token } })
+    let response = await axios.get(`${backendApi}/expense/download`, { headers: { "Authorization": token } })
 
     if (response.status === 200) {
       //the bcakend is essentially sending a download link
@@ -319,7 +382,7 @@ async function updateExpense(e) {
       }
       //console.log(eList.children.length);
 
-      axios.delete(`http://localhost:3000/expense/deleteExpense/${key}`, { headers: { "Authorization": token } })
+      axios.delete(`${backendApi}/expense/deleteExpense/${key}`, { headers: { "Authorization": token } })
         .catch((err) => { console.log(err); });
 
 

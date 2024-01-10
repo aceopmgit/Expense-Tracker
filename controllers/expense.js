@@ -51,8 +51,26 @@ exports.addExpense = async (req, res, next) => {
 
 exports.getExpense = async (req, res, next) => {
   try {
-    const details = await expense.findAll({ where: { userId: req.user.id } });
-    res.status(201).json({ allExpenseDetails: details });
+    const page = Number(req.query.page) || 1;
+
+    const total = await expense.count();
+    const limit = Number(req.query.limit) || total;
+    //console.log('******************************', page)
+    const details = await expense.findAll({
+      where: { userId: req.user.id },
+      offset: (page - 1) * limit,
+      limit: limit
+    });
+    //console.log('*********************************', details)
+    //console.log('******************************', total)
+    res.status(201).json({
+      expenses: details,
+      currentPage: page,
+      hasNextPage: limit * page < total,
+      nextPage: page + 1,
+      hasPreviousPage: page > 1,
+      previousPage: page - 1
+    });
   } catch (err) {
     res.status(500).json({
       Error: err,
@@ -143,7 +161,7 @@ exports.downloadExpense = async (req, res, next) => {
   }
 }
 
-exports.downloadList = async (req, res, next) => {
+exports.downloadHistory = async (req, res, next) => {
   try {
     const downloads = await req.user.getDownloads()
     res.status(201).json({ downloadList: downloads });
