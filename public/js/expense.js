@@ -1,4 +1,8 @@
 const token = localStorage.getItem("token");
+const rows = localStorage.getItem('rows')
+if (rows === null) {
+  rows = 10;
+}
 
 const expense = document.getElementById("expense");
 expense.addEventListener("submit", addExpense);
@@ -11,6 +15,7 @@ premium.addEventListener('click', premiumUser);
 
 const backendApi = 'http://localhost:3000';
 const rpagination = document.getElementById('rpagination');
+
 
 async function addExpense(e) {
   try {
@@ -116,7 +121,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       //console.log(res.data.allExpenseDetails[i])
       showExpense(res.data.expenses[i]);
     }
-    console.log(res);
+    //console.log(res);
 
 
     //Updating Amount of user in front-end
@@ -132,8 +137,10 @@ window.addEventListener("DOMContentLoaded", async () => {
       document.getElementById('leaderBoard').style.visibility = 'visible';
       document.getElementById('report').style.visibility = 'visible';
       showLeaderBoard();
-      showReport(1)
 
+
+      showReport(1, rows);
+      document.getElementById('rows').value = rows
     }
     else {
       premium.style.visibility = 'visible';
@@ -152,59 +159,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     console.log(err);
   }
 });
-
-function showPagination({
-  currentPage,
-  hasNextPage,
-  nextPage,
-  hasPreviousPage,
-  previousPage,
-
-}) {
-  rpagination.innerHTML = "";
-  console.log(rpagination)
-
-  if (hasPreviousPage) {
-    const pbtn = document.createElement('button');
-    pbtn.className = 'page-item';
-    pbtn.innerHTML = previousPage
-    pbtn.addEventListener('click', () => { showReport(previousPage) });
-    rpagination.appendChild(pbtn);
-  }
-  const cbtn = document.createElement('button');
-  cbtn.className = 'page-item';
-  cbtn.innerHTML = currentPage;
-  cbtn.addEventListener('click', () => { showReport(currentPage) });
-  rpagination.appendChild(cbtn);
-
-  if (hasNextPage) {
-    const nbtn = document.createElement('button');
-    nbtn.className = 'page-item';
-    nbtn.innerHTML = nextPage;
-    nbtn.addEventListener('click', () => { showReport(nextPage) });
-    rpagination.appendChild(nbtn);
-
-  }
-}
-
-// async function getExpenses(page) {
-//   try {
-//     const res = await axios.get(`${backendApi}/expense/getExpense?page=${page}`, { headers: { "Authorization": token } });
-
-//     eList.innerHTML = "";
-//     for (let i = 0; i < res.data.expenses.length; i++) {
-//       //console.log(res.data.allExpenseDetails[i])
-//       showExpense(res.data.expenses[i]);
-//     }
-//     console.log(res);
-
-
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-
-
 
 async function premiumUser(e) {
 
@@ -271,13 +225,56 @@ async function showLeaderBoard() {
   }
 }
 
-async function showReport(page) {
+
+function showPagination({
+  currentPage,
+  hasNextPage,
+  nextPage,
+  hasPreviousPage,
+  previousPage,
+
+}) {
+  rpagination.innerHTML = "";
+  //console.log(rpagination)
+
+  if (hasPreviousPage) {
+    const pbtn = document.createElement('button');
+    pbtn.className = 'page-item';
+    pbtn.innerHTML = previousPage
+    pbtn.addEventListener('click', () => { showReport(previousPage, rows) });
+    rpagination.appendChild(pbtn);
+  }
+  const cbtn = document.createElement('button');
+  cbtn.className = 'page-item';
+  cbtn.innerHTML = currentPage;
+  cbtn.addEventListener('click', () => { showReport(currentPage, rows) });
+  rpagination.appendChild(cbtn);
+
+  if (hasNextPage) {
+    const nbtn = document.createElement('button');
+    nbtn.className = 'page-item';
+    nbtn.innerHTML = nextPage;
+    nbtn.addEventListener('click', () => { showReport(nextPage, rows) });
+    rpagination.appendChild(nbtn);
+
+  }
+}
+
+function limitRows() {
+  const rows = document.getElementById('rows').value;
+  localStorage.setItem('rows', rows);
+
+
+  showReport(1, rows);
+}
+
+async function showReport(page, limit) {
   try {
     const expenseBody = document.getElementById('expenseBody');
     expenseBody.innerHTML = "";
 
     //For showing user Expenses
-    const res = await axios.get(`${backendApi}/expense/getExpense?page=${page}&limit=${10}`, { headers: { "Authorization": token } });
+    const res = await axios.get(`${backendApi}/expense/getExpense?page=${page}&limit=${limit}`, { headers: { "Authorization": token } });
 
 
     for (let i = 0; i < res.data.expenses.length; i++) {
