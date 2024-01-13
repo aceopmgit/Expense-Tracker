@@ -59,7 +59,10 @@ exports.getExpense = async (req, res, next) => {
     const details = await expense.findAll({
       where: { userId: req.user.id },
       offset: (page - 1) * limit,
-      limit: limit
+      limit: limit,
+      order: [
+        ['createdAt', 'DESC']
+      ]
     });
     //console.log('*********************************', details)
     //console.log('******************************', total)
@@ -163,7 +166,12 @@ exports.downloadExpense = async (req, res, next) => {
 
 exports.downloadHistory = async (req, res, next) => {
   try {
-    const downloads = await req.user.getDownloads()
+    const downloads = await req.user.getDownloads({
+      attributes: ['Name', 'Url', 'createdAt'],
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    })
     res.status(201).json({ downloadList: downloads });
   } catch (err) {
     res.status(500).json({
