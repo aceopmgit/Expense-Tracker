@@ -1,7 +1,11 @@
 const express = require("express");
 const bodyparser = require("body-parser");
 const path = require("path");
+const fs = require('fs');
+const helmet = require('helmet');
+const morgan = require('morgan');
 require('dotenv').config();
+
 
 const sequelize = require("./util/database");
 const user = require("./models/user");
@@ -18,8 +22,14 @@ const purchaseRoutes = require("./routes/purchase")
 const indexRoutes = require("./routes/index");
 const passwordRoutes = require("./routes/password");
 
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
+app.use(helmet({
+  contentSecurityPolicy: false
+}))
+app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -45,7 +55,7 @@ sequelize
   .sync()
   //.sync({ force: true }) //it syncs our models to the database by creating the appropriate tables and relations if we have them
   .then((result) => {
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000);
   })
   .catch((err) => {
     console.log(err);

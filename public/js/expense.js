@@ -1,5 +1,5 @@
 const token = localStorage.getItem("token");
-const rows = localStorage.getItem('rows')
+let rows = localStorage.getItem('rows')
 if (rows === null) {
   rows = 10;
 }
