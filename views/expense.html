@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+    integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+  <title>Expense Tracker</title>
+</head>
+
+<body style="background-color: #eef76c">
+  <div class="container-fluid" style="background-color: #9e400abe">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+      <h1 class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <svg class="bi me-2" width="40" height="32">
+          <use xlink:href="#bootstrap"></use>
+        </svg>
+        <span class="fs-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-wallet-fill"
+            viewBox="0 0 16 16">
+            <path
+              d="M1.5 2A1.5 1.5 0 0 0 0 3.5v2h6a.5.5 0 0 1 .5.5c0 .253.08.644.306.958.207.288.557.542 1.194.542s.987-.254 1.194-.542C9.42 6.644 9.5 6.253 9.5 6a.5.5 0 0 1 .5-.5h6v-2A1.5 1.5 0 0 0 14.5 2z" />
+            <path
+              d="M16 6.5h-5.551a2.7 2.7 0 0 1-.443 1.042C9.613 8.088 8.963 8.5 8 8.5s-1.613-.412-2.006-.958A2.7 2.7 0 0 1 5.551 6.5H0v6A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5z" />
+          </svg>
+          Expense Tracker
+          <button type="button" id='premium-icon' class="btn btn-dark"
+            style="font-size:50%;color:gold;visibility:hidden ;" data-toggle="tooltip" data-placement="bottom"
+            title="You are a Premium User">
+            &starf;
+          </button>
+        </span>
+      </h1>
+
+      <h5>
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <button id='leaderBoard' data-bs-toggle="modal" data-bs-target="#leaderBoardModal"
+              style="color: black;visibility:hidden;" class="nav-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                class="bi bi-lightning-fill" viewBox="0 0 16 16">
+                <path
+                  d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641z" />
+              </svg>
+              Show Leaderboard
+
+            </button>
+          </li>
+
+          <li class="nav-item">
+            <button id='report' data-bs-toggle="modal" data-bs-target="#reportModal"
+              style="color: black;visibility:hidden;" class="nav-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                class="bi bi-file-earmark-bar-graph-fill" viewBox="0 0 16 16">
+                <path
+                  d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1m.5 10v-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5m-2.5.5a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5zm-3 0a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5z" />
+              </svg>
+              Report</button>
+
+          </li>
+
+          <li class="nav-item">
+            <button id='premium' class="nav-link" style="color: black;visibility:hidden;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                class="bi bi-currency-exchange" viewBox="0 0 16 16">
+                <path
+                  d="M0 5a5 5 0 0 0 4.027 4.905 6.5 6.5 0 0 1 .544-2.073C3.695 7.536 3.132 6.864 3 5.91h-.5v-.426h.466V5.05q-.001-.07.004-.135H2.5v-.427h.511C3.236 3.24 4.213 2.5 5.681 2.5c.316 0 .59.031.819.085v.733a3.5 3.5 0 0 0-.815-.082c-.919 0-1.538.466-1.734 1.252h1.917v.427h-1.98q-.004.07-.003.147v.422h1.983v.427H3.93c.118.602.468 1.03 1.005 1.229a6.5 6.5 0 0 1 4.97-3.113A5.002 5.002 0 0 0 0 5m16 5.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0m-7.75 1.322c.069.835.746 1.485 1.964 1.562V14h.54v-.62c1.259-.086 1.996-.74 1.996-1.69 0-.865-.563-1.31-1.57-1.54l-.426-.1V8.374c.54.06.884.347.966.745h.948c-.07-.804-.779-1.433-1.914-1.502V7h-.54v.629c-1.076.103-1.808.732-1.808 1.622 0 .787.544 1.288 1.45 1.493l.358.085v1.78c-.554-.08-.92-.376-1.003-.787zm1.96-1.895c-.532-.12-.82-.364-.82-.732 0-.41.311-.719.824-.809v1.54h-.005zm.622 1.044c.645.145.943.38.943.796 0 .474-.37.8-1.02.86v-1.674z" />
+              </svg>
+              Buy Premium
+            </button>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+              style="color: black;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                class="bi bi-person-circle" viewBox="0 0 16 16">
+                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                <path fill-rule="evenodd"
+                  d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+              </svg>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" style="color: black;">Profile</a></li>
+              <li> <a class="dropdown-item" href=" /" style="color: black;">Logout</a></li>
+            </ul>
+          </li>
+
+        </ul>
+      </h5>
+    </header>
+  </div>
+
+  <div class="modal fade" id="reportModal">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+
+        <div class="modal-header" style="background-color: black;color: gold;">
+          <h1>Your Expenses</h1>
+        </div>
+
+        <div class="modal-body" style="background-color: #eef76c">
+
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="Expenses-tab" data-bs-toggle="tab" data-bs-target="#expense-tab-pane"
+                type="button" role="tab" aria-controls="expense-tab-pane" aria-selected="true">Expenses</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history-tab-pane"
+                type="button" role="tab" aria-controls="history-tab-pane" aria-selected="false">Download
+                History</button>
+            </li>
+
+
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="expense-tab-pane" role="tabpanel" aria-labelledby="Expenses-tab"
+              tabindex="0">
+              <br>
+              <form>
+                <label for="pages">Rows per page : </label>
+                <select name="rows" id="rows">
+                  < <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    <option value="25">25</option>
+                    <option value="30">30</option>
+                </select>
+                <button onclick="limitRows()" id="rowSubmit" class="btn-primary">></button>
+              </form>
+              <br>
+
+              <table class="table">
+                <thead>
+                  <tr class="table-primary">
+                    <th scope=" col">Date</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody class="table-secondary" id="expenseBody">
+
+
+                </tbody>
+              </table>
+              <h4 style="text-align: right;">Total : Rs. <span id="rtotal">0</span></h4>
+              <br>
+
+              <div class="pagination justify-content-center" id="rpagination"></div>
+
+            </div>
+
+            <div class="tab-pane fade" id="history-tab-pane" role="tabpanel" aria-labelledby="history-tab" tabindex="0">
+
+              <table class="table">
+                <thead>
+                  <tr class="table-primary">
+                    <th scope=" col">Date</th>
+                    <th scope="col">File Downloaded</th>
+
+                  </tr>
+                </thead>
+                <tbody class="table-secondary" id="dhistory">
+
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="background-color: #eef76c">
+          <button class="btn-primary" onclick="download()" id="download">Download Expense</button>
+          <button class="btn-dark" data-bs-dismiss="modal" data-bs-target="#modal" style="color: gold;">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="leaderBoardModal">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+
+        <div class="modal-header" style="background-color: black;color: gold;">
+          <h1>Leader Board</h1>
+
+        </div>
+
+        <div class="modal-body" style="background-color: #eef76c">
+          <ol class="list-group list-group-numbered " id="leaderList"></ol>
+
+        </div>
+
+        <div class="modal-footer" style="background-color: #eef76c">
+          <button class="btn-dark" data-bs-dismiss="modal" data-bs-target="#modal" id="submit"
+            style="color: gold;">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12 col-md-8 mx-auto">
+      <div class="container">
+        <br />
+        <br />
+        <div class="card" style="background-color: #eef891">
+          <div class="card-body">
+            <h2 class="card-title">Add Expense</h2>
+
+            <form id="expense">
+              <div class="form-floating">
+                <input type="number" id="amount" name="amount" class="form-control" placeholder="amount" required />
+                <label for="amount" class="form-label">Enter Expense Amount</label>
+                <br />
+              </div>
+
+              <div class="form-floating">
+                <input type="text" id="desc" name="description" class="form-control" placeholder="Enter description"
+                  required />
+                <label for="description" class="form-label">Enter Description</label>
+                <br />
+              </div>
+
+              <select name="category" id="category" class="form-control" required>
+                <option value="">Select Your Expense Category</option>
+                <option value="Cell Phone">Cell Phone</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Food and Groceries">Food and Groceries</option>
+                <option value="Fuel">Fuel</option>
+                <option value="Rent">Rent</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Subscriptions">Subscriptions</option>
+                <option value="Transportation">Transportation</option>
+                <option value="Others">Others</option>
+              </select>
+
+              <br />
+
+              <button class="btn btn-block btn-primary" id="button" type="submit">Add Expense </button>
+              <br>
+            </form>
+          </div>
+        </div>
+        <br />
+
+        <div class="card" style="background-color: #eef891; visibility: hidden" id="expenseDetails">
+          <div class="card-body">
+            <h4 class="card-title">Expense Details</h4>
+            <br />
+            <div class="pre-scrollable">
+              <ul id="expenseList" class="list-group"></ul>
+            </div>
+            <br>
+            <h4 style="text-align: right;">Total : Rs. <span id="total">0</span></h4>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="py-3 my-4" style="background-color: #9e400abe">
+    <h5 class="text-center text-body-secondary"><b>© 2023 Company, Inc</b></h5>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"></script>
+  <script src="/js/expense.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</body>
+
+</html>
