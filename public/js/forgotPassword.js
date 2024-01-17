@@ -1,5 +1,6 @@
 const resetPassword = document.getElementById("resetForm");
 resetPassword.addEventListener("submit", reset);
+const backendApi = 'http://54.161.98.100:3000'
 
 function reset(e) {
     e.preventDefault()
@@ -11,7 +12,7 @@ function reset(e) {
 
     async function resetPassword() {
         try {
-            const res = await axios.post("http://localhost:3000/password/resetEmail", details)
+            const res = await axios.post(`${backendApi}/password/resetEmail`, details)
             console.log(res)
             alert(res.data.message)
             document.getElementById("remail").value = "";

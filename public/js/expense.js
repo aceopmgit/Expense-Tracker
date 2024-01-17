@@ -13,7 +13,7 @@ eList.addEventListener("click", updateExpense);
 const premium = document.getElementById('premium');
 premium.addEventListener('click', premiumUser);
 
-const backendApi = 'http://localhost:3000';
+const backendApi = 'http://54.161.98.100:3000'
 const rpagination = document.getElementById('rpagination');
 
 

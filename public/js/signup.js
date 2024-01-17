@@ -1,5 +1,6 @@
 const signup = document.getElementById("signup");
 signup.addEventListener("submit", submitUser);
+const backendApi = 'http://54.161.98.100:3000'
 
 function submitUser(e) {
   e.preventDefault();
@@ -17,7 +18,7 @@ function submitUser(e) {
   async function userSignup() {
     try {
       const res = await axios.post(
-        "http://localhost:3000/user/addUser",
+        `${backendApi}/user/addUser`,
         details
       );
 

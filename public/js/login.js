@@ -1,6 +1,6 @@
 const login = document.getElementById("login");
 login.addEventListener("submit", submitUser);
-
+const backendApi = 'http://54.161.98.100:3000'
 
 
 function submitUser(e) {
@@ -17,7 +17,7 @@ function submitUser(e) {
   async function loginCheck() {
     try {
       const res = await axios.post(
-        "http://localhost:3000/user/loginCheck",
+        `${backendApi}/user/loginCheck`,
         details
       );
       alert(res.data.message);

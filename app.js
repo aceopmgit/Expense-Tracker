@@ -4,6 +4,8 @@ const path = require("path");
 const fs = require('fs');
 const helmet = require('helmet');
 const morgan = require('morgan');
+// const expressWinston = require('express-winston');
+// const { transports, format } = require('winston');
 require('dotenv').config();
 
 
@@ -21,8 +23,33 @@ const expenseRoutes = require("./routes/expense");
 const purchaseRoutes = require("./routes/purchase")
 const indexRoutes = require("./routes/index");
 const passwordRoutes = require("./routes/password");
+const errorRoutes = require('./routes/error404');
 
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs', 'access.log'), { flags: 'a' });
+
+// app.use(expressWinston.logger({
+//   //transports are place where we want to save our logs
+//   transports: [
+//     //new transports.Console(),
+//     //400 is warning  & 500 is error
+//     new transports.File({
+//       level: 'warn',
+//       filename: path.join(__dirname, 'logs', 'logWarnings.log')
+//     }),
+//     new transports.File({
+//       level: 'error',
+//       filename: path.join(__dirname, 'logs', 'logErrors.log')
+//     }),
+
+//   ],
+//   //used for deciding the format of logging
+//   format: format.combine(
+//     format.json(),
+//     format.timestamp(),
+//     format.prettyPrint()
+//   ),
+//   statusLevels: true
+// }))
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -38,6 +65,7 @@ app.use("/expense", expenseRoutes);
 app.use("/purchase", purchaseRoutes);
 app.use("/password", passwordRoutes);
 app.use(indexRoutes);
+app.use(errorRoutes);
 
 user.hasMany(expenses);
 expenses.belongsTo(user);
