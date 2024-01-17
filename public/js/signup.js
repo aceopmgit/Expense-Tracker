@@ -18,7 +18,7 @@ function submitUser(e) {
   async function userSignup() {
     try {
       const res = await axios.post(
-        `${backendApi}/user/addUser`,
+        `/user/addUser`,
         details
       );
 

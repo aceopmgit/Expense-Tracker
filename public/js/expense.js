@@ -35,13 +35,13 @@ async function addExpense(e) {
     };
 
 
-    const res = await axios.post(`${backendApi}/expense/addExpense`, details, { headers: { "Authorization": token } });
+    const res = await axios.post(`/expense/addExpense`, details, { headers: { "Authorization": token } });
     //axios only accepts the rsponse in the range of 200.if response is greater than 200 it will go to catch
 
     showExpense(res.data.expenseDetails);
 
     //Updating Amount of user in front-end
-    const result = await axios.get(`${backendApi}/user/getTotal`, { headers: { "Authorization": token } })
+    const result = await axios.get(`/user/getTotal`, { headers: { "Authorization": token } })
     document.getElementById('total').innerHTML = `${result.data.total}`;
     document.getElementById('rtotal').innerHTML = `${result.data.total}`;
 
@@ -114,7 +114,7 @@ function parseJwt(token) {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
 
-    const res = await axios.get(`${backendApi}/expense/getExpense`, { headers: { "Authorization": token } });
+    const res = await axios.get(`/expense/getExpense`, { headers: { "Authorization": token } });
 
 
     for (let i = 0; i < res.data.expenses.length; i++) {
@@ -125,7 +125,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
     //Updating Amount of user in front-end
-    const result = await axios.get(`${backendApi}/user/getTotal`, { headers: { "Authorization": token } })
+    const result = await axios.get(`/user/getTotal`, { headers: { "Authorization": token } })
     document.getElementById('total').innerHTML = `${result.data.total}`;
     document.getElementById('rtotal').innerHTML = `${result.data.total}`;
 
@@ -162,7 +162,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 async function premiumUser(e) {
 
-  const res = await axios.get(`${backendApi}/purchase/premiumMembership`, { headers: { "Authorization": token } });
+  const res = await axios.get(`/purchase/premiumMembership`, { headers: { "Authorization": token } });
   console.log(res);
 
   const options = {
@@ -170,7 +170,7 @@ async function premiumUser(e) {
     "order_id": res.data.order.id,
     "handler": async function (response) {
 
-      const ut = await axios.post(`${backendApi}/purchase/updateTransaction`, {
+      const ut = await axios.post(`/purchase/updateTransaction`, {
         order_id: options.order_id,
         payment_id: response.razorpay_payment_id,
         status: 'SUCCESSFUL'
@@ -195,7 +195,7 @@ async function premiumUser(e) {
   rzp1.on('payment.failed', async function (response) {
     console.log(response)
     alert('Something went wrong !');
-    await axios.post(`${backendApi}/purchase/updateTransaction`, {
+    await axios.post(`/purchase/updateTransaction`, {
       order_id: options.order_id,
       payment_id: response.razorpay_payment_id,
       status: 'FAILED'
@@ -209,7 +209,7 @@ async function showLeaderBoard() {
     const leaderList = document.getElementById('leaderList');
     leaderList.innerHTML = "";
 
-    const leaders = await axios.get(`${backendApi}/purchase/showLeaderBoard`, { headers: { "Authorization": token } });
+    const leaders = await axios.get(`/purchase/showLeaderBoard`, { headers: { "Authorization": token } });
 
     // console.log(leaders.data.details);
     for (let i = 0; i < leaders.data.details.length; i++) {
@@ -274,7 +274,7 @@ async function showReport(page, limit) {
     expenseBody.innerHTML = "";
 
     //For showing user Expenses
-    const res = await axios.get(`${backendApi}/expense/getExpense?page=${page}&limit=${limit}`, { headers: { "Authorization": token } });
+    const res = await axios.get(`/expense/getExpense?page=${page}&limit=${limit}`, { headers: { "Authorization": token } });
 
 
     for (let i = 0; i < res.data.expenses.length; i++) {
@@ -312,7 +312,7 @@ async function downloadHistory() {
     dList.innerHTML = "";
 
     //For showing download history of user
-    const result = await axios.get(`${backendApi}/expense/downloadHistory`, { headers: { "Authorization": token } });
+    const result = await axios.get(`/expense/downloadHistory`, { headers: { "Authorization": token } });
     //console.log(result)
     for (let i = 0; i < result.data.downloadList.length; i++) {
       const tr = document.createElement('tr');
@@ -339,7 +339,7 @@ async function downloadHistory() {
 
 async function download() {
   try {
-    let response = await axios.get(`${backendApi}/expense/download`, { headers: { "Authorization": token } })
+    let response = await axios.get(`/expense/download`, { headers: { "Authorization": token } })
 
     if (response.status === 200) {
       //the bcakend is essentially sending a download link
@@ -379,7 +379,7 @@ async function updateExpense(e) {
       }
       //console.log(eList.children.length);
 
-      axios.delete(`${backendApi}/expense/deleteExpense/${key}`, { headers: { "Authorization": token } })
+      axios.delete(`/expense/deleteExpense/${key}`, { headers: { "Authorization": token } })
         .catch((err) => { console.log(err); });
 
 

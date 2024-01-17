@@ -12,7 +12,7 @@ function reset(e) {
 
     async function resetPassword() {
         try {
-            const res = await axios.post(`${backendApi}/password/resetEmail`, details)
+            const res = await axios.post(`/password/resetEmail`, details)
             console.log(res)
             alert(res.data.message)
             document.getElementById("remail").value = "";

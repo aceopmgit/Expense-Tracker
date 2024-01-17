@@ -17,7 +17,7 @@ function submitUser(e) {
   async function loginCheck() {
     try {
       const res = await axios.post(
-        `${backendApi}/user/loginCheck`,
+        `/user/loginCheck`,
         details
       );
       alert(res.data.message);
