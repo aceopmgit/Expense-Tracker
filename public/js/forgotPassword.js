@@ -1,6 +1,6 @@
 const resetPassword = document.getElementById("resetForm");
 resetPassword.addEventListener("submit", reset);
-const backendApi = 'http://54.161.98.100:3000'
+const backendApi = 'https://54.161.98.100:3000'
 
 function reset(e) {
     e.preventDefault()
