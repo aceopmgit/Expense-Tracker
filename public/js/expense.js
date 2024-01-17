@@ -4,7 +4,6 @@ if (rows === null) {
   rows = 10;
 }
 
-
 const expense = document.getElementById("expense");
 expense.addEventListener("submit", addExpense);
 
