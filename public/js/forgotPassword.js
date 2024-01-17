@@ -2,6 +2,7 @@ const resetPassword = document.getElementById("resetForm");
 resetPassword.addEventListener("submit", reset);
 const backendApi = 'https://54.161.98.100:3000'
 
+
 function reset(e) {
     e.preventDefault()
     let remail = document.getElementById("remail").value;

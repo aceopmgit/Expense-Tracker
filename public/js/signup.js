@@ -2,6 +2,7 @@ const signup = document.getElementById("signup");
 signup.addEventListener("submit", submitUser);
 const backendApi = 'https://54.161.98.100:3000'
 
+
 function submitUser(e) {
   e.preventDefault();
 
