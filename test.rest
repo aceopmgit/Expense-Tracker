@@ -1,0 +1,8 @@
+get http://localhost:3000/user/signup
+//content-type: application/json
+
+
+
+//ctrl+shift+p to run
+
+//ctrl+k ctrl+s for keyboard shprtcut
