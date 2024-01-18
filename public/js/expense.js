@@ -45,6 +45,9 @@ async function addExpense(e) {
     document.getElementById('total').innerHTML = `${result.data.total}`;
     document.getElementById('rtotal').innerHTML = `${result.data.total}`;
 
+    showLeaderBoard();
+    showReport(1, rows);
+
     // document.getElementById("amount").value = "";
     // document.getElementById("desc").value = "";
     // document.getElementById("category").value = "";
@@ -383,8 +386,12 @@ async function updateExpense(e) {
         .catch((err) => { console.log(err); });
 
 
+
+
       const total = Number(document.getElementById('total').textContent) - Number(amount);
       document.getElementById('total').innerHTML = total
+
+
 
 
 
