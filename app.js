@@ -59,7 +59,9 @@ app.use(helmet({
 app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(express.static(path.join(__dirname, "public")));
+const PORT = process.env.PORT || 3000;
 
+app.use('/check', () => { console.log('**********************************************************************************') })
 app.use("/user", userRoutes);
 app.use("/expense", expenseRoutes);
 app.use("/purchase", purchaseRoutes);
@@ -83,7 +85,9 @@ sequelize
   .sync()
   //.sync({ force: true }) //it syncs our models to the database by creating the appropriate tables and relations if we have them
   .then((result) => {
-    app.listen(process.env.PORT || 3000);
+    app.listen(PORT, () => {
+      console.log(`*********************Port is running at port ${PORT}****************************`);
+    });
   })
   .catch((err) => {
     console.log(err);
