@@ -1,5 +1,7 @@
 const path = require("path");
 const AWS = require('aws-sdk');
+require("aws-sdk/lib/maintenance_mode_message").suppress = true;
+
 
 const expense = require("../models/expense.js");
 const downloads = require("../models/downloads.js");
