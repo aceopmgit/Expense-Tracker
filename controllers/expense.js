@@ -7,7 +7,12 @@ const downloads = require("../models/downloads.js");
 const sequelize = require('../util/database.js');
 
 exports.expense = (req, res, next) => {
-  res.sendFile(path.join(__dirname, "..", "views", "expense.html"));
+  if (res.user) {
+    res.sendFile(path.join(__dirname, "..", "views", "expense.html"));
+  }
+  else {
+    res.redirect('/user/login');
+  }
 };
 
 function isStringInvalid(string) {

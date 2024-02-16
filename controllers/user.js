@@ -34,22 +34,35 @@ exports.addUser = async (req, res, next) => {
     const email = req.body.Email;
     const password = req.body.Password;
 
+    let userExist = await user.findOne({
+      where: {
+        Email: email
+      }
+    })
+
     if (isStringInvalid(name) || isStringInvalid(email) || isStringInvalid(password)) {
       return res.status(400).json({ status: false, message: 'Bad Parameter. Something is Misssing !' });
     }
 
-    bcrypt.hash(password, 10, async (err, hash) => {
-      console.log(err);
+    if (!userExist) {
+      bcrypt.hash(password, 10, async (err, hash) => {
+        console.log(err);
 
-      const data = await user.create({
-        Name: name,
-        Email: email,
-        Password: hash,
-      }, { transaction: t });
+        const data = await user.create({
+          Name: name,
+          Email: email,
+          Password: hash,
+        }, { transaction: t });
 
-      await t.commit();
-      res.status(201).json({ status: true, message: "User Signed Up Successfully" });
-    });
+        await t.commit();
+        res.status(201).json({ status: true, message: "User Signed Up Successfully" });
+      });
+    }
+    else {
+      res.status(409).json({ message: 'Email or Phone Number already exist!' });
+    }
+
+
   } catch (err) {
     await t.rollback()
     res.status(500).json({

@@ -1,8 +1,7 @@
 const signup = document.getElementById("signup");
 signup.addEventListener("submit", submitUser);
-const backendApi = 'https://54.161.98.100:3000'
 
-function submitUser(e) {
+async function submitUser(e) {
   e.preventDefault();
 
   let name = document.getElementById("name").value;
@@ -14,26 +13,32 @@ function submitUser(e) {
     Email: email,
     Password: password,
   };
+  try {
+    const res = await axios.post(
+      `/user/addUser`,
+      details
+    );
 
-  async function userSignup() {
-    try {
-      const res = await axios.post(
-        `/user/addUser`,
-        details
-      );
+    alert(res.data.message);
+    window.location.href = "/user/login";
 
-      alert(res.data.message);
-      window.location.href = "/user/login";
+    //document.getElementById("name").value = "";
+    //document.getElementById("email").value = "";
+    //document.getElementById("password").value = "";
+  }
+  catch (err) {
 
-      //document.getElementById("name").value = "";
-      //document.getElementById("email").value = "";
-      //document.getElementById("password").value = "";
-    } catch (err) {
+    if (err.response.status < 500) {
+      alert(err.response.data.message);
+    }
+    else {
+
       document.body.innerHTML =
         document.body.innerHTML + `<h4 style="color: red;">${err}</h4>`;
       console.log(err);
     }
-  }
 
-  userSignup();
+  }
 }
+
+

@@ -116,6 +116,9 @@ function parseJwt(token) {
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
+    if (!token) {
+      window.location.href = "/user/login";
+    }
 
     const res = await axios.get(`/expense/getExpense`, { headers: { "Authorization": token } });
 
